@@ -36,7 +36,7 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
-Dockerfile
+_Dockerfile
 # System files
 .DS_Store
 Thumbs.db
