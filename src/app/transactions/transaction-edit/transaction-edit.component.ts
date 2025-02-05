@@ -102,6 +102,7 @@ export class TransactionEditComponent implements OnInit {
           .pipe(
             map((data: any) => {
               this.collectionSize = data.totalElements;
+              console.log(data.content);
               return data.content;
             }),
             map((products: Product[]) => {
@@ -116,6 +117,7 @@ export class TransactionEditComponent implements OnInit {
                   return sortEvent.direction === 'asc' ? res : -res;
                 });
               }
+
               return products;
             }),
             tap(() => (this.isLoading = false)),

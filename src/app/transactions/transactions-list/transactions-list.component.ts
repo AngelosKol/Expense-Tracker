@@ -67,7 +67,7 @@ export class TransactionsListComponent implements OnInit {
 
     // Observable for product updates (additions/deletions)
     const transactionsUpdated$ =
-      this.transactionService.transactionUpdated.pipe(startWith(null));
+      this.transactionService.transactionsUpdated.pipe(startWith(null));
 
     this.transactions$ = combineLatest([
       filter$,

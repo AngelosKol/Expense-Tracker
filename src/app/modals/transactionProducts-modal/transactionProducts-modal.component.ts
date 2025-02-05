@@ -113,8 +113,14 @@ export class TransactionProductsModalComponent implements OnInit {
   initializeForm() {
     this.transactionProductForm = this.fb.group({
       product: ['', Validators.required],
-      price: ['', Validators.required],
-      quantity: ['', Validators.required],
+      price: [
+        '',
+        [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
+      ],
+      quantity: [
+        1,
+        [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
+      ],
       productId: [],
     });
   }
