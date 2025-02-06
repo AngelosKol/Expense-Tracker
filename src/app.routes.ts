@@ -5,12 +5,12 @@ import { HomeComponent } from './app/home/home.component';
 import { LandingPageComponent } from './app/landing-page/landing-page.component';
 import { LoginComponent } from './app/landing-page/login/login.component';
 import { RegisterComponent } from './app/landing-page/register/register.component';
-import { ProductsComponent } from './app/products/products.component';
+import { ProductsComponent } from './app/product/products.component';
 import { SettingsComponent } from './app/settings/settings.component';
-import { ShopsComponent } from './app/shops/shops.component';
-import { TransactionEditComponent } from './app/transactions/transaction-edit/transaction-edit.component';
-import { TransactionsListComponent } from './app/transactions/transactions-list/transactions-list.component';
-import { TransactionsComponent } from './app/transactions/transactions.component';
+import { ShopsComponent } from './app/shop/shops.component';
+import { TransactionEditComponent } from './app/transaction/transaction-edit/transaction-edit.component';
+import { TransactionsListComponent } from './app/transaction/transaction-list/transaction-list.component';
+import { TransactionsComponent } from './app/transaction/transactions.component';
 
 export const routes: Routes = [
   {

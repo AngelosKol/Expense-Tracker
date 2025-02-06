@@ -1,12 +1,14 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { TransactionService } from '../transaction.service';
-import { ActivatedRoute } from '@angular/router';
-import { AsyncPipe, DecimalPipe } from '@angular/common';
 import {
   NgbHighlight,
   NgbModal,
   NgbPagination,
 } from '@ng-bootstrap/ng-bootstrap';
+import { Product } from './product.model';
+import { CreateProductModalComponent } from '../modals/create-product-modal/create-product-modal.component';
+import { ProductService } from './products.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NgbdSortableHeader, SortEvent } from '../shared/sortable.directive';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import {
   catchError,
@@ -16,40 +18,29 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { compare } from '../../shared/utils';
-import { Currency, CurrencyService } from '../../shared/currency.service';
-import { Product } from 'src/app/products/product.model';
-import {
-  NgbdSortableHeader,
-  SortEvent,
-} from 'src/app/shared/sortable.directive';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { TransactionProductsModalComponent } from 'src/app/modals/transactionProducts-modal/transactionProducts-modal.component';
-import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
+import { compare } from '../shared/utils';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner/loading-spinner.component';
+import { AsyncPipe } from '@angular/common';
 @Component({
   standalone: true,
   imports: [
     NgbPagination,
     NgbHighlight,
-    NgbdSortableHeader,
     LoadingSpinnerComponent,
-    AsyncPipe,
-    DecimalPipe,
     ReactiveFormsModule,
+    AsyncPipe,
+    NgbdSortableHeader,
   ],
-  selector: 'app-transaction-edit',
-  templateUrl: './transaction-edit.component.html',
-  providers: [DecimalPipe],
+  selector: 'app-products',
+  templateUrl: './products.component.html',
 })
-export class TransactionEditComponent implements OnInit {
-  transactionId: number;
-  products$: Observable<Product[]>;
-  currency: Currency;
+export class ProductsComponent implements OnInit {
   @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
-  isLoading: boolean;
+  products$: Observable<Product[]>;
+  isLoading: boolean = false;
   error: string;
-  currentPage = 1;
-  itemsPerPage = 8;
+  currentPage: number = 1;
+  itemsPerPage: number = 8;
   collectionSize: number;
   filter = new FormControl('', { nonNullable: true });
 
@@ -61,48 +52,36 @@ export class TransactionEditComponent implements OnInit {
   });
 
   constructor(
-    private transactionService: TransactionService,
-    private route: ActivatedRoute,
     private modalService: NgbModal,
-    private currencyService: CurrencyService
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
-    this.currencyService.currencies$.subscribe((data) => {
-      this.currency = data;
-    });
-
-    // Observable for transaction ID
-    this.route.params.subscribe(
-      (params) => (this.transactionId = params['id'])
-    );
-
-    //Observable for filter changes
+    // Observable for filter changes
     const filter$ = this.filter.valueChanges.pipe(
       startWith(''),
       debounceTime(100)
     );
 
     // Observable for product updates (additions/deletions)
-    const transactionUpdated$ = this.transactionService.transactionUpdated.pipe(
+    const productsUpdated$ = this.productService.productsUpdated.pipe(
       startWith(null)
     );
 
     // Combine filter, pagination, sorting, and product updates into one stream
     this.products$ = combineLatest([
       filter$,
-      transactionUpdated$,
+      productsUpdated$,
       this.pagination$,
       this.sorting$,
     ]).pipe(
       switchMap(([filterText, _, currentPage, sortEvent]) => {
         this.isLoading = true;
-        return this.transactionService
-          .getProducts(this.transactionId, this.itemsPerPage, currentPage - 1)
+        return this.productService
+          .getProducts(this.itemsPerPage, currentPage)
           .pipe(
             map((data: any) => {
               this.collectionSize = data.totalElements;
-              console.log(data.content);
               return data.content;
             }),
             map((products: Product[]) => {
@@ -117,14 +96,12 @@ export class TransactionEditComponent implements OnInit {
                   return sortEvent.direction === 'asc' ? res : -res;
                 });
               }
-
               return products;
             }),
             tap(() => (this.isLoading = false)),
             catchError((error) => {
               this.isLoading = false;
-              this.setError(error);
-              console.error('Error fetching products', error);
+              this.setError(error.error.message || 'Error fetching products');
               return of([]);
             })
           );
@@ -132,34 +109,39 @@ export class TransactionEditComponent implements OnInit {
     );
   }
 
-  // Modal Methods
-  addProduct() {
-    const modalRef = this.modalService.open(TransactionProductsModalComponent, {
-      size: 'xl',
-    });
-    modalRef.componentInstance.mode = 'add';
-    // Pass the transaction ID to the modal
-    modalRef.componentInstance.transactionId = this.transactionId;
-  }
-
-  onDelete(prod: Product) {
-    if (window.confirm('Delete Item?')) {
-      this.transactionService
-        .deleteProduct(this.transactionId, prod.name)
-        .subscribe({
-          next: () => console.log('Product removed.'),
-          error: (err) => this.setError(err.error.message),
-        });
-    }
+  onSort({ column, direction }: SortEvent) {
+    this.sorting$.next({ column, direction });
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
+    // Emits the new page number to the pagination$ observable, triggering the data fetch for the new page via the reactive pipeline.
     this.pagination$.next(page);
   }
 
-  onSort({ column, direction }: any) {
-    this.sorting$.next({ column, direction });
+  // Modal Methods
+  addProduct() {
+    const modalRef = this.modalService.open(CreateProductModalComponent, {
+      size: 'xl',
+    });
+    modalRef.componentInstance.mode = 'add';
+  }
+
+  onEdit(prod: Product) {
+    this.productService.setProduct(prod);
+    const modalRef = this.modalService.open(CreateProductModalComponent, {
+      size: 'xl',
+    });
+    modalRef.componentInstance.mode = 'edit';
+  }
+
+  onDelete(prod: Product) {
+    if (window.confirm('Delete Item?')) {
+      this.productService.deleteProduct(prod.id).subscribe({
+        next: () => console.log('Product deleted.'),
+        error: (err) => this.setError(err.error.message),
+      });
+    }
   }
 
   setError(errMsg: string) {

@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ChartData, ChartOptions } from 'chart.js';
-import { Transaction } from '../../transactions/transaction.model';
+import { Transaction } from '../../transaction/transaction.model';
 import { AnalyticsService } from '../analytics.service';
 import { TransactionChartService } from './transaction-chart.service';
 import { Subscription } from 'rxjs';

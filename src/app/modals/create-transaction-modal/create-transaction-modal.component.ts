@@ -5,9 +5,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Transaction } from '../../transactions/transaction.model';
+import { Transaction } from '../../transaction/transaction.model';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { TransactionService } from '../../transactions/transaction.service';
+import { TransactionService } from '../../transaction/transaction.service';
 import {
   OperatorFunction,
   Observable,
@@ -15,17 +15,17 @@ import {
   distinctUntilChanged,
   map,
 } from 'rxjs';
-import { Shop } from '../../shops/shop.model';
-import { ShopService } from '../../shops/shop.service';
+import { Shop } from '../../shop/shop.model';
+import { ShopService } from '../../shop/shop.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, NgbTypeahead],
   selector: 'app-transaction-modal',
-  templateUrl: './transaction-modal.component.html',
+  templateUrl: './create-transaction-modal.component.html',
 })
-export class TransactionModalComponent {
+export class CreateTransactionModalComponent {
   transactionForm: FormGroup;
   shops: Shop[];
   selectedShop: Shop;

@@ -5,7 +5,7 @@ import {
   NgbPagination,
   NgbPaginationModule,
 } from '@ng-bootstrap/ng-bootstrap';
-import { TransactionModalComponent } from '../../modals/transaction-modal/transaction-modal.component';
+import { CreateTransactionModalComponent } from '../../modals/create-transaction-modal/create-transaction-modal.component';
 import { TransactionService } from '../transaction.service';
 import { Transaction } from '../transaction.model';
 import { Router } from '@angular/router';
@@ -37,7 +37,7 @@ import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-
     ReactiveFormsModule,
   ],
   selector: 'app-transactions-list',
-  templateUrl: './transactions-list.component.html',
+  templateUrl: './transaction-list.component.html',
 })
 export class TransactionsListComponent implements OnInit {
   @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
@@ -116,7 +116,7 @@ export class TransactionsListComponent implements OnInit {
   //Modal Methods
 
   open() {
-    this.modalService.open(TransactionModalComponent, {
+    this.modalService.open(CreateTransactionModalComponent, {
       size: 'xl',
       animation: true,
     });

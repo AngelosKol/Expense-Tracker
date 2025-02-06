@@ -7,7 +7,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { Shop } from './shop.model';
 import { ShopService } from './shop.service';
-import { ShopModalComponent } from '../modals/shop-modal/shop-modal.component';
+import { CreateShopModalComponent } from '../modals/create-shop-modal/create-shop-modal.component';
 import {
   BehaviorSubject,
   Observable,
@@ -116,13 +116,17 @@ export class ShopsComponent implements OnInit {
 
   //Modal Methods
   addShop() {
-    const modalRef = this.modalService.open(ShopModalComponent, { size: 'xl' });
+    const modalRef = this.modalService.open(CreateShopModalComponent, {
+      size: 'xl',
+    });
     modalRef.componentInstance.mode = 'add';
   }
 
   onEdit(shop: Shop) {
     this.shopService.setShop(shop);
-    const modalRef = this.modalService.open(ShopModalComponent, { size: 'xl' });
+    const modalRef = this.modalService.open(CreateShopModalComponent, {
+      size: 'xl',
+    });
     modalRef.componentInstance.mode = 'edit';
   }
 

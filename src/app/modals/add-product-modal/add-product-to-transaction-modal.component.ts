@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { ProductService } from '../../products/products.service';
+import { ProductService } from '../../product/products.service';
 import {
   Observable,
   OperatorFunction,
@@ -15,8 +15,8 @@ import {
   distinctUntilChanged,
   map,
 } from 'rxjs';
-import { Product } from '../../products/product.model';
-import { TransactionService } from '../../transactions/transaction.service';
+import { Product } from '../../product/product.model';
+import { TransactionService } from '../../transaction/transaction.service';
 import { Currency, CurrencyService } from 'src/app/shared/currency.service';
 import { CommonModule } from '@angular/common';
 
@@ -24,9 +24,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, NgbTypeahead, FormsModule],
   selector: 'app-transactionProducts-modal',
-  templateUrl: './transactionProducts-modal.component.html',
+  templateUrl: './add-product-to-transaction-modal.component.html',
 })
-export class TransactionProductsModalComponent implements OnInit {
+export class AddProductToTransactionModalComponent implements OnInit {
   products: Product[];
   selectedProduct: Product;
   transactionProductForm: FormGroup;

@@ -6,16 +6,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Shop } from '../../shops/shop.model';
-import { ShopService } from '../../shops/shop.service';
+import { Shop } from '../../shop/shop.model';
+import { ShopService } from '../../shop/shop.service';
 import { CommonModule } from '@angular/common';
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   selector: 'app-shop-modal',
-  templateUrl: './shop-modal.component.html',
+  templateUrl: './create-shop-modal.component.html',
 })
-export class ShopModalComponent implements OnInit {
+export class CreateShopModalComponent implements OnInit {
   shop: Shop;
   shopForm: FormGroup;
   mode: string;

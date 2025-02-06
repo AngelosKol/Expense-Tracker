@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import { Product } from '../products/product.model';
+import { Product } from '../product/product.model';
 export type SortColumn = keyof Product | '';
 export type SortDirection = 'asc' | 'desc' | '';
 const rotate: { [key: string]: SortDirection } = {

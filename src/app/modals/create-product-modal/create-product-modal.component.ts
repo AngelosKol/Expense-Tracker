@@ -5,18 +5,18 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { Product } from '../../products/product.model';
-import { ProductService } from '../../products/products.service';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Product } from '../../product/product.model';
+import { ProductService } from '../../product/products.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgbTypeahead],
+  imports: [ReactiveFormsModule, CommonModule],
   selector: 'app-product-modal',
-  templateUrl: './product-modal.component.html',
+  templateUrl: './create-product-modal.component.html',
 })
-export class ProductModalComponent implements OnInit {
+export class CreateProductModalComponent implements OnInit {
   product: Product;
   productForm: FormGroup;
   mode: string;
@@ -39,11 +39,7 @@ export class ProductModalComponent implements OnInit {
   onSubmit() {
     const formValue = this.productForm.value;
     if (this.mode == 'add') {
-      const newProduct = new Product(
-        formValue.productName,
-        formValue.productDescription,
-        formValue.productPrice
-      );
+      const newProduct = new Product(formValue.productName);
       this.productService.addProduct(newProduct).subscribe({
         next: () => {
           this.handleSuccess();
@@ -55,7 +51,6 @@ export class ProductModalComponent implements OnInit {
     } else if (this.mode == 'edit') {
       const updatedProduct: Partial<Product> = {
         name: formValue.productName,
-        description: formValue.productDescription,
       };
       this.productService
         .updateProduct(this.product.id, updatedProduct)
@@ -73,15 +68,11 @@ export class ProductModalComponent implements OnInit {
   initializeEditForm() {
     this.productForm = this.fb.group({
       productName: [this.product.name, Validators.required],
-      productDescription: [
-        this.product.description ? this.product.description : '',
-      ],
     });
   }
   initializeForm() {
     this.productForm = this.fb.group({
       productName: ['', Validators.required],
-      productDescription: [''],
     });
   }
 
