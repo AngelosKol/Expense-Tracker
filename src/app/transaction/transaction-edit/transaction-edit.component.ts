@@ -98,7 +98,7 @@ export class TransactionEditComponent implements OnInit {
       switchMap(([filterText, _, currentPage, sortEvent]) => {
         this.isLoading = true;
         return this.transactionService
-          .getProducts(this.transactionId, this.itemsPerPage, currentPage - 1)
+          .getProducts(this.transactionId, this.itemsPerPage, currentPage)
           .pipe(
             map((data: any) => {
               this.collectionSize = data.totalElements;
@@ -117,7 +117,6 @@ export class TransactionEditComponent implements OnInit {
                   return sortEvent.direction === 'asc' ? res : -res;
                 });
               }
-
               return products;
             }),
             tap(() => (this.isLoading = false)),

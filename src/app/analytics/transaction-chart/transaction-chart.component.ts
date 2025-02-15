@@ -79,7 +79,7 @@ export class TransactionChartComponent implements OnInit {
     if (data[0].date) {
       const dateOptions: Intl.DateTimeFormatOptions = {
         day: 'numeric',
-        month: 'long',
+        month: 'short',
       };
       accumulatedValues = data.reduce(
         (acc, curr) => {
