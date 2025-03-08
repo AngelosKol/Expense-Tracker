@@ -18,6 +18,7 @@ import {
 import { Product } from '../../product/product.model';
 import { Currency, CurrencyService } from 'src/app/shared/currency.service';
 import { CommonModule } from '@angular/common';
+import { TransactionService } from 'src/app/transaction/transaction.service';
 
 @Component({
   standalone: true,
@@ -33,12 +34,13 @@ export class AddProductToTransactionModalComponent implements OnInit {
   currency: Currency;
   mode: string;
   error: string;
-  existingProducts: Product[];
+  pendingProducts: Product[] = [];
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private productService: ProductService,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private transactionService: TransactionService
   ) {}
 
   ngOnInit() {
@@ -80,7 +82,7 @@ export class AddProductToTransactionModalComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onProductAdd() {
     const formValue = this.transactionProductForm.value;
     const newProduct: any = {
       name: this.selectedProduct.name,
@@ -88,14 +90,31 @@ export class AddProductToTransactionModalComponent implements OnInit {
       price: formValue.price,
       quantity: formValue.quantity,
     };
-    const isExists = this.existingProducts.some(
+    const isExists = this.pendingProducts.some(
       (p) => p.name === newProduct.name
     );
     if (isExists) {
       this.setError('Product already exists in the list!');
       return;
     }
-    this.activeModal.close(newProduct);
+    this.pendingProducts.push(newProduct);
+    this.initializeForm();
+  }
+
+  onSubmit() {
+    const productsToSend = this.pendingProducts.map(
+      ({ name, ...rest }) => rest
+    );
+    this.transactionService
+      .addProductsBatch(productsToSend, this.transactionId)
+      .subscribe({
+        next: () => {
+          this.pendingProducts = [];
+          console.log('success');
+        },
+        error: (err) => console.log(err),
+      });
+    this.activeModal.close(this.pendingProducts);
     this.initializeForm();
   }
 

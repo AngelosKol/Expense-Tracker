@@ -3,22 +3,18 @@
     <div class="row">
         <div class="col">
           <div class="d-flex justify-content-betweeen" [ngClass]="{'justify-content-end': pendingProducts.length > 0}"  >
-            @if(!pendingProducts.length) {
               <div class="input-group">
                   <form>
                       <input  class="form-control"   placeholder="Search"  type="text" [formControl]="filter" />
                   </form>
               </div>
-            }
               <div>
-                @if(!pendingProducts.length) {
                 <ngb-pagination
                 [collectionSize]="collectionSize"
                 [(page)]="currentPage"
                 [pageSize]="itemsPerPage"
                 (pageChange)="onPageChange($event)">
               </ngb-pagination>
-            }
                 <button class="btn p-1" style="background-color: #00B3BB; color:white;" (click)="addProduct()" >Add Product</button>
               </div>
 
@@ -28,7 +24,6 @@
                 <app-loading-spinner></app-loading-spinner>
             </div>
         }
-        @if (!pendingProducts.length) {
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -54,34 +49,6 @@
                 }
             </tbody>
         </table>
-    }@else {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col"> Name</th>
-                    <th scope="col"> Price</th>
-                    <th scope="col"> Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (prod of pendingProducts; track prod.name ) {
-                    <tr>
-                        <td scope="row">{{prod.name }}</td>
-                        <td scope="row">{{ prod.price | number }} {{currency.symbol}}</td>
-                        <td scope="row"> {{ prod.quantity | number  }}</td>
-                        <td class="text-end"> 
-                          <div class="d-flex flex-row justify-content-center gap-2">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-x"></i>
-                                </button>
-                          </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <button (click)="savePendingProducts()">Save Changes</button>
-    }
     </div>
   </div>
    

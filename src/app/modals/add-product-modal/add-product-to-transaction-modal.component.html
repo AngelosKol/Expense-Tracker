@@ -12,7 +12,7 @@
 				{{ error }}
 				<button type="button" class="btn-close" aria-label="Close" (click)="error = null"></button>
 			  </div>
-			<form [formGroup]="transactionProductForm"  class="m-0" (ngSubmit)="onSubmit()" >
+			<form [formGroup]="transactionProductForm"  class="m-0" (ngSubmit)="onProductAdd()" >
 				<div class="col-auto mb-3">
                 <label for="product">Search for a Product:</label>
 				<input formControlName='product'  type="text"  class="form-control"
@@ -32,8 +32,14 @@
 					<input formControlName='quantity'  type="number" class="form-control" id="quantity" placeholder="Quantity">
 					<span class="help-block text-center" *ngIf="!transactionProductForm.get('quantity').valid && transactionProductForm.get('quantity').touched" >Required field</span>
 				  </div>
-				<div class="col-auto d-flex justify-content-center">
-				  <button  type="submit" class="btn btn-primary mb-3"style="background-color: #00B3BB; color:white;" [disabled]="!transactionProductForm.valid ||  !selectedProduct?.id">Submit</button>
+				  <div class="d-flex justify-content-between w-100">
+					<div class="mx-auto">
+						<button type="submit" class="btn btn-primary mb-3" style="background-color: #00B3BB; color:white;"
+							[disabled]="!transactionProductForm.valid || !selectedProduct?.id">Add</button>
+					</div>
+					<div>
+						<a class="btn btn-primary mb-3" style="background-color: #00B3BB; color:white;" (click)="onSubmit()">Submit</a>
+					</div>
 				</div>
 				<div class="col-auto d-flex justify-content-center" *ngIf="!transactionProductForm.valid && transactionProductForm.touched">
 					<span class="help-block text-center">Please fill the required fields</span>

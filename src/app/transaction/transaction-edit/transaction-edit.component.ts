@@ -140,12 +140,11 @@ export class TransactionEditComponent implements OnInit {
       }
     );
     modalRef.componentInstance.mode = 'add';
-    modalRef.componentInstance.existingProducts = this.pendingProducts;
+    // Pass the transaction ID to the modal
+    modalRef.componentInstance.transactionId = this.transactionId;
     modalRef.result
-      .then((productToPush: Product) => {
-        if (productToPush) {
-          this.pendingProducts.push(productToPush);
-        }
+      .then((productList: Product[]) => {
+        this.pendingProducts = productList;
       })
       .catch((reason) => {
         console.log('Modal dismissed with reason:', reason);
