@@ -14,11 +14,10 @@ export class ProductService {
   constructor(private http: HttpClient) {}
 
   setProduct(product: Product) {
-    // this.productSource.next(product);
     this.productSource.update(() => product);
   }
 
-  addProduct(product: Product): Observable<any> {
+  addProduct(product: Partial<Product>): Observable<any> {
     return this.http.post(`${this.apiRoot}/products`, product).pipe(
       tap(() => this.productsUpdated.next()),
       catchError((err) => {

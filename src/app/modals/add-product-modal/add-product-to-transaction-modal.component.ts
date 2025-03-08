@@ -16,7 +16,6 @@ import {
   map,
 } from 'rxjs';
 import { Product } from '../../product/product.model';
-import { TransactionService } from '../../transaction/transaction.service';
 import { Currency, CurrencyService } from 'src/app/shared/currency.service';
 import { CommonModule } from '@angular/common';
 
@@ -32,11 +31,13 @@ export class AddProductToTransactionModalComponent implements OnInit {
   transactionProductForm: FormGroup;
   transactionId: number;
   currency: Currency;
+  mode: string;
+  error: string;
+  existingProducts: Product[];
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private productService: ProductService,
-    private transactionService: TransactionService,
     private currencyService: CurrencyService
   ) {}
 
@@ -81,17 +82,21 @@ export class AddProductToTransactionModalComponent implements OnInit {
 
   onSubmit() {
     const formValue = this.transactionProductForm.value;
-    this.transactionService
-      .addProductTotransaction(
-        this.transactionId,
-        formValue.productId,
-        formValue.price,
-        formValue.quantity
-      )
-      .subscribe({
-        next: () => this.handleSuccess(),
-        error: (err) => console.log(err),
-      });
+    const newProduct: any = {
+      name: this.selectedProduct.name,
+      productId: formValue.productId,
+      price: formValue.price,
+      quantity: formValue.quantity,
+    };
+    const isExists = this.existingProducts.some(
+      (p) => p.name === newProduct.name
+    );
+    if (isExists) {
+      this.setError('Product already exists in the list!');
+      return;
+    }
+    this.activeModal.close(newProduct);
+    this.initializeForm();
   }
 
   onProductSelected(selectedProductName: string) {
@@ -110,6 +115,11 @@ export class AddProductToTransactionModalComponent implements OnInit {
     this.initializeForm();
   }
 
+  handleError(error) {
+    this.initializeForm();
+    this.setError(error.error.message);
+  }
+
   initializeForm() {
     this.transactionProductForm = this.fb.group({
       product: ['', Validators.required],
@@ -123,5 +133,10 @@ export class AddProductToTransactionModalComponent implements OnInit {
       ],
       productId: [],
     });
+  }
+
+  setError(errMsg: string) {
+    this.error = errMsg;
+    setTimeout(() => (this.error = null), 8000);
   }
 }

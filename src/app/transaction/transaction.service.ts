@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, tap, catchError } from 'rxjs';
 import { Transaction } from './transaction.model';
 import { HttpClient } from '@angular/common/http';
+import { Product } from '../product/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -77,6 +78,20 @@ export class TransactionService {
         tap(() => this.transactionUpdated.next()),
         catchError((err) => {
           console.error('Error adding product to transaction');
+          throw err;
+        })
+      );
+  }
+  addProductsBatch(products: any[], transactionId: number) {
+    return this.http
+      .post(
+        `${this.apiRoot}/transactions/id/${transactionId}/products`,
+        products
+      )
+      .pipe(
+        tap(() => this.transactionUpdated.next()),
+        catchError((err) => {
+          console.error('Error adding product batch');
           throw err;
         })
       );

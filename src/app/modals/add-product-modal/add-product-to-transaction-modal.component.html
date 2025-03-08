@@ -8,6 +8,10 @@
 	<div class="card">
 		
 		<div class="card-body  mt-5">
+			<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+				{{ error }}
+				<button type="button" class="btn-close" aria-label="Close" (click)="error = null"></button>
+			  </div>
 			<form [formGroup]="transactionProductForm"  class="m-0" (ngSubmit)="onSubmit()" >
 				<div class="col-auto mb-3">
                 <label for="product">Search for a Product:</label>
@@ -39,7 +43,5 @@
 		</div>
 	</div>
 </div>
-<div class="modal-footer py-0 border-0">
-	<button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-</div>
+
 

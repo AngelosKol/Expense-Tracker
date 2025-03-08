@@ -39,7 +39,7 @@ export class CreateProductModalComponent implements OnInit {
   onSubmit() {
     const formValue = this.productForm.value;
     if (this.mode == 'add') {
-      const newProduct = new Product(formValue.productName);
+      const newProduct = { name: formValue.productName };
       this.productService.addProduct(newProduct).subscribe({
         next: () => {
           this.handleSuccess();

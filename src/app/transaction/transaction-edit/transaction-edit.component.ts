@@ -1,7 +1,7 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { TransactionService } from '../transaction.service';
 import { ActivatedRoute } from '@angular/router';
-import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, CommonModule, DecimalPipe } from '@angular/common';
 import {
   NgbHighlight,
   NgbModal,
@@ -36,6 +36,7 @@ import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-
     AsyncPipe,
     DecimalPipe,
     ReactiveFormsModule,
+    CommonModule,
   ],
   selector: 'app-transaction-edit',
   templateUrl: './transaction-edit.component.html',
@@ -52,7 +53,7 @@ export class TransactionEditComponent implements OnInit {
   itemsPerPage = 8;
   collectionSize: number;
   filter = new FormControl('', { nonNullable: true });
-
+  pendingProducts: Product[] = [];
   // Subjects for pagination and sorting
   private pagination$ = new BehaviorSubject<number>(this.currentPage);
   private sorting$ = new BehaviorSubject<SortEvent>({
@@ -102,7 +103,6 @@ export class TransactionEditComponent implements OnInit {
           .pipe(
             map((data: any) => {
               this.collectionSize = data.totalElements;
-              console.log(data.content);
               return data.content;
             }),
             map((products: Product[]) => {
@@ -140,8 +140,31 @@ export class TransactionEditComponent implements OnInit {
       }
     );
     modalRef.componentInstance.mode = 'add';
-    // Pass the transaction ID to the modal
-    modalRef.componentInstance.transactionId = this.transactionId;
+    modalRef.componentInstance.existingProducts = this.pendingProducts;
+    modalRef.result
+      .then((productToPush: Product) => {
+        if (productToPush) {
+          this.pendingProducts.push(productToPush);
+        }
+      })
+      .catch((reason) => {
+        console.log('Modal dismissed with reason:', reason);
+      });
+  }
+
+  savePendingProducts() {
+    const productsToSend = this.pendingProducts.map(
+      ({ name, ...rest }) => rest
+    );
+    this.transactionService
+      .addProductsBatch(productsToSend, this.transactionId)
+      .subscribe({
+        next: () => {
+          this.pendingProducts = [];
+          console.log('success');
+        },
+        error: (err) => console.log(err),
+      });
   }
 
   onDelete(prod: Product) {
