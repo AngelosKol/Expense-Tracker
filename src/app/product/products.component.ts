@@ -78,25 +78,11 @@ export class ProductsComponent implements OnInit {
       switchMap(([filterText, _, currentPage, sortEvent]) => {
         this.isLoading = true;
         return this.productService
-          .getProducts(this.itemsPerPage, currentPage)
+          .getProducts(this.itemsPerPage, currentPage, filterText, sortEvent)
           .pipe(
             map((data: any) => {
               this.collectionSize = data.totalElements;
               return data.content;
-            }),
-            map((products: Product[]) => {
-              // Apply filtering
-              products = products.filter((product) =>
-                product.name.toLowerCase().includes(filterText.toLowerCase())
-              );
-              // Apply sorting
-              if (sortEvent.column && sortEvent.direction) {
-                products = [...products].sort((a, b) => {
-                  const res = compare(a[sortEvent.column], b[sortEvent.column]);
-                  return sortEvent.direction === 'asc' ? res : -res;
-                });
-              }
-              return products;
             }),
             tap(() => (this.isLoading = false)),
             catchError((error) => {

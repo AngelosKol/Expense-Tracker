@@ -1,4 +1,4 @@
-<div class="modal-header py-1 border-0">
+<div class="modal-header py-1 ">
 	<h4 class="modal-title" *ngIf="mode=='add'">Add Product</h4>
 	<h4 class="modal-title" *ngIf="mode=='edit'">Edit Product</h4>
 
@@ -7,28 +7,48 @@
       </button>
 </div>
 <div class="modal-body">
-	<div class="card">
-		<div class="card-body  mt-5">
-			<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
-				{{ error }}
-				<button type="button" class="btn-close" aria-label="Close" (click)="error = null"></button>
-			  </div>
 			<form [formGroup]="productForm"  class="m-0" (ngSubmit)="onSubmit()">
-				<div class="col-auto mb-3">
-					<input formControlName='productName'  type="text"  class="form-control" id="productName"placeholder="Product Name" >
-					<span *ngIf="!productForm.get('productName').valid && productForm.get('productName').touched" class="help-block">Required Field</span>
-				  </div>
-				  <div class="col-auto d-flex justify-content-center">
-					<button *ngIf="mode==='edit'"  type="submit" class="btn btn-warning mb-3" [disabled]="!productForm.valid" >Edit</button>
-					<button *ngIf="mode==='add'"  type="submit" class="btn mb-3 "style="background-color: #00B3BB; color:white;" [disabled]="!productForm.valid">Submit</button>
-				  </div>
+				<div class="row form-group mb-3">
+					<label for="family" class="col-sm-2 col-form-label col-form-label">Product Family</label>
+					<div class="col-sm-10">
+						<select class="custom-select mr-sm-2 form-control" id="family" >
+							<!-- @for (category of product.category; track $index) {} -->
+							<option selected>Choose...</option>
+							<option value="1">One</option>
+							<option value="2">Two</option>
+							<option value="3">Three</option>
+						</select>
+					</div>
+				</div>
+				<div class="row form-group mb-3">
+					<label for="category" class="col-sm-2 col-form-label col-form-label">Product Category</label>
+					<div class="col-sm-10">
+						<select class="custom-select mr-sm-2 form-control" id="category" >
+							<!-- @for (category of product.category; track $index) {} -->
+							<option selected>Choose...</option>
+							<option value="1">One</option>
+							<option value="2">Two</option>
+							<option value="3">Three</option>
+						</select>
+					</div>
+				</div>
+					<div class="row form-group mb-3">
+						<label for="productName" class="col-sm-2 col-form-label col-form-label"><b>Product Name</b></label>
+						<div class="col-sm-10">
+							<input formControlName='productName'  type="text"  class="form-control" id="productName"placeholder="Product Name" >
+							<span *ngIf="!productForm.get('productName').valid && productForm.get('productName').touched" class="help-block">Required Field</span>
+						</div>
+					</div>
+					<div class="col-auto d-flex justify-content-center">
+						<button *ngIf="mode==='edit'"  type="submit" class="btn btn-warning mb-3" [disabled]="!productForm.valid" >Edit</button>
+						<button *ngIf="mode==='add'"  type="submit" class="btn mb-3 "style="background-color: #00B3BB; color:white;" [disabled]="!productForm.valid">Submit</button>
+					</div>
 					<div *ngIf="!productForm.valid && productForm.touched" class="col-auto d-flex justify-content-center" >
-						<span  class="help-block text-center">Please fill the required fields</span>
-					  </div>
-				  
-			  </form>
-		</div>
-	</div>
+							<span  class="help-block text-center">Please fill the required fields</span>
+					</div>
+			</form>
+
+
 </div>
 <div class="modal-footer py-0 border-0">
 	<button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
