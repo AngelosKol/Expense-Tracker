@@ -82,6 +82,7 @@ export class ProductsComponent implements OnInit {
           .pipe(
             map((data: any) => {
               this.collectionSize = data.totalElements;
+              console.log(data);
               return data.content;
             }),
             tap(() => (this.isLoading = false)),

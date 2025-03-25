@@ -1,8 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { Observable, Subject, catchError, tap } from 'rxjs';
+import { Observable, Subject, catchError, of, tap } from 'rxjs';
 import { Product } from './product.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SortEvent } from '../shared/sortable.directive';
+import { Category } from './category.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,10 @@ import { SortEvent } from '../shared/sortable.directive';
 export class ProductService {
   productSource = signal<Product | null>(null);
   productsUpdated = new Subject<void>();
-  apiRoot = 'http://localhost:8080/api/v1/products';
-
+  productEndpoint = 'http://localhost:8080/api/v1/products';
+  categoryEndpoint = 'http://localhost:8080/api/v1/categories';
+  private categories: Category[] = [];
+  private categoriesLoaded = false;
   constructor(private http: HttpClient) {}
 
   setProduct(product: Product) {
@@ -19,16 +22,18 @@ export class ProductService {
   }
 
   addProduct(product: Partial<Product>): Observable<any> {
-    return this.http.post(`${this.apiRoot}`, product).pipe(
-      tap(() => this.productsUpdated.next()),
-      catchError((err) => {
-        // console.log('Error adding product',err)
-        throw err;
-      })
-    );
+    return this.http
+      .post(`${this.productEndpoint}/id/${product.id}`, product)
+      .pipe(
+        tap(() => this.productsUpdated.next()),
+        catchError((err) => {
+          // console.log('Error adding product',err)
+          throw err;
+        })
+      );
   }
   getAllProducts(): Observable<any> {
-    return this.http.get(`${this.apiRoot}/all`);
+    return this.http.get(`${this.productEndpoint}/all`);
   }
 
   getProducts(
@@ -45,11 +50,11 @@ export class ProductService {
     if (sortEvent.column && sortEvent.direction) {
       params = params.set('sort', `${sortEvent.column},${sortEvent.direction}`);
     }
-    return this.http.get<any>(`${this.apiRoot}`, { params });
+    return this.http.get<any>(`${this.productEndpoint}`, { params });
   }
 
   deleteProduct(productId: number): Observable<any> {
-    return this.http.delete(`${this.apiRoot}/id/${productId}`).pipe(
+    return this.http.delete(`${this.productEndpoint}/id/${productId}`).pipe(
       tap(() => this.productsUpdated.next()),
       catchError((err) => {
         // console.log('Error deleting product',err)
@@ -62,13 +67,33 @@ export class ProductService {
     productId: number,
     updatedProduct: Partial<Product>
   ): Observable<any> {
+    console.log(
+      `productID: ${productId} , ${updatedProduct.categoryName}. ${updatedProduct.categoryId}`
+    );
     return this.http
-      .put(`${this.apiRoot}/id/${productId}`, updatedProduct)
+      .put(`${this.productEndpoint}/id/${productId}`, updatedProduct)
       .pipe(
         tap(() => this.productsUpdated.next()),
         catchError((err) => {
           // console.log('Error updating product',err)
           throw err;
+        })
+      );
+  }
+
+  getCategories(): Observable<any> {
+    if (this.categoriesLoaded) {
+      return of(this.categories);
+    }
+    let params = new HttpParams().set('sort', 'name' + ',' + 'asc');
+
+    return this.http
+      .get<Category[]>(`${this.categoryEndpoint}`, { params })
+      .pipe(
+        tap((categories: Category[]) => {
+          console.log(categories);
+          this.categories = categories;
+          this.categoriesLoaded = true;
         })
       );
   }

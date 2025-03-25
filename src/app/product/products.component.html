@@ -28,7 +28,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col" sortable="id"  (sort)="onSort($event)" >Product ID</th>
+                    <th scope="col" sortable="categoryName"  (sort)="onSort($event)" >Product Category</th>
                     <th scope="col" sortable="name" (sort)="onSort($event)">Product Name</th>
                 </tr>
             </thead>
@@ -36,7 +36,7 @@
                 @for (prod of products$ | async; track prod.id ) {
                     
                     <tr>
-                        <td scope="col">{{ prod.id  }}</td>
+                        <td scope="col">{{ prod.categoryName  }}</td>
                         <td><ngb-highlight [result]="prod.name" [term]="filter.value"></ngb-highlight>  </td>
                         <td class="text-end"> 
                           <div class="d-flex flex-row justify-content-end gap-2">
