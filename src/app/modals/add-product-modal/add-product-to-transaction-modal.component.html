@@ -29,7 +29,7 @@
 				  <span class="help-block text-center" *ngIf="!transactionProductForm.get('price').valid && transactionProductForm.get('price').touched" >Required field</span>
 				</div>
 				<div class="col-auto mb-3">
-					<input formControlName='quantity'  type="number" class="form-control" id="quantity" placeholder="Quantity">
+					<input formControlName='quantity'  type="text" class="form-control" id="quantity" placeholder="Quantity" step="0.0001">
 					<span class="help-block text-center" *ngIf="!transactionProductForm.get('quantity').valid && transactionProductForm.get('quantity').touched" >Required field</span>
 				  </div>
 				  <div class="d-flex justify-content-between w-100">

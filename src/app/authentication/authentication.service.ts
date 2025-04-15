@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private apiUrl = 'http://localhost:8080/api/v1/auth';
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -17,7 +18,7 @@ export class AuthenticationService {
     email: string;
     password: string;
   }) {
-    return this.http.post(`${this.apiUrl}/register`, formData).pipe(
+    return this.http.post(`${this.apiUrl}/auth/register`, formData).pipe(
       map((response) => {
         return response;
       })
@@ -26,7 +27,7 @@ export class AuthenticationService {
 
   login(email: string, password: string) {
     return this.http
-      .post(`${this.apiUrl}/authenticate`, { email, password })
+      .post(`${this.apiUrl}/auth/authenticate`, { email, password })
       .pipe(
         map((response: any) => {
           const token = response.access_token;

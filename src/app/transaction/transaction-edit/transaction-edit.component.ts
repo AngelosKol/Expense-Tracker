@@ -26,6 +26,7 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AddProductToTransactionModalComponent } from 'src/app/modals/add-product-modal/add-product-to-transaction-modal.component';
 import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
+
 @Component({
   standalone: true,
   imports: [
@@ -54,6 +55,7 @@ export class TransactionEditComponent implements OnInit {
   collectionSize: number;
   filter = new FormControl('', { nonNullable: true });
   pendingProducts: Product[] = [];
+
   // Subjects for pagination and sorting
   private pagination$ = new BehaviorSubject<number>(this.currentPage);
   private sorting$ = new BehaviorSubject<SortEvent>({
@@ -133,22 +135,19 @@ export class TransactionEditComponent implements OnInit {
 
   // Modal Methods
   addProduct() {
-    const modalRef = this.modalService.open(
-      AddProductToTransactionModalComponent,
-      {
-        size: 'xl',
-      }
-    );
-    modalRef.componentInstance.mode = 'add';
-    // Pass the transaction ID to the modal
+    const modalRef = this.modalService.open(AddProductToTransactionModalComponent, {
+      size: 'lg',
+    });
     modalRef.componentInstance.transactionId = this.transactionId;
-    modalRef.result
-      .then((productList: Product[]) => {
-        this.pendingProducts = productList;
-      })
-      .catch((reason) => {
-        console.log('Modal dismissed with reason:', reason);
-      });
+    modalRef.componentInstance.pendingProducts = this.pendingProducts;
+    modalRef.result.then(
+      (result) => {
+        if (result) {
+          this.pendingProducts = result;
+        }
+      },
+      () => {}
+    );
   }
 
   savePendingProducts() {

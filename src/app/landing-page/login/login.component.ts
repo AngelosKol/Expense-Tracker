@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -32,7 +31,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     const form = this.loginForm.value;
     this.authService.login(form.email, form.password).subscribe({
-      next: () => this.router.navigate(['/home']),
+      next: (res) => {
+        console.log('✅ Login success:', res);
+        this.router.navigate(['/home']);
+      },
       error: (err) => console.log(err),
     });
   }

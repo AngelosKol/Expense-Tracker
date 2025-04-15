@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, tap, catchError } from 'rxjs';
 import { Transaction } from './transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { Product } from '../product/product.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -10,26 +10,25 @@ import { Product } from '../product/product.model';
 export class TransactionService {
   transactionsUpdated = new Subject<void>();
   transactionUpdated = new Subject<void>();
-
-  apiRoot = 'http://localhost:8080/api/v1';
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
   getAllTransactions(): Observable<any> {
-    return this.http.get(`${this.apiRoot}/transactions/all`);
+    return this.http.get(`${this.apiUrl}/transactions/all`);
   }
 
   getTransactions(size: number, page: number): Observable<any> {
     return this.http.get(
-      `${this.apiRoot}/transactions?size=${size}&page=${page - 1}`
+      `${this.apiUrl}/transactions?size=${size}&page=${page - 1}`
     );
   }
   getTransaction(id: number) {
-    return this.http.get(`${this.apiRoot}/transactions/id/${id}`);
+    return this.http.get(`${this.apiUrl}/transactions/id/${id}`);
   }
 
   addTransaction(transaction: Transaction): Observable<any> {
-    return this.http.post(`${this.apiRoot}/transactions`, transaction).pipe(
+    return this.http.post(`${this.apiUrl}/transactions`, transaction).pipe(
       tap(() => this.transactionsUpdated.next()),
       catchError((error) => {
         console.error('Error adding transaction', error);
@@ -39,7 +38,7 @@ export class TransactionService {
   }
 
   deleteTransaction(id: number) {
-    return this.http.delete(`${this.apiRoot}/transactions/id/${id}`).pipe(
+    return this.http.delete(`${this.apiUrl}/transactions/id/${id}`).pipe(
       tap(() => this.transactionsUpdated.next()),
       catchError((error) => {
         console.error('Error deleting transaction', error);
@@ -50,14 +49,14 @@ export class TransactionService {
 
   getAllProducts(transactionId: number) {
     return this.http.get(
-      `${this.apiRoot}/transactions/id/${transactionId}/details/all`
+      `${this.apiUrl}/transactions/id/${transactionId}/details/all`
     );
   }
 
   getProducts(transactionId: number, size: number, page: number) {
     return this.http.get(
       `${
-        this.apiRoot
+        this.apiUrl
       }/transactions/id/${transactionId}/details?size=${size}&page=${page - 1}`
     );
   }
@@ -69,7 +68,7 @@ export class TransactionService {
     quantity: number
   ) {
     return this.http
-      .post(`${this.apiRoot}/transactions/id/${transactionId}/product`, {
+      .post(`${this.apiUrl}/transactions/id/${transactionId}/product`, {
         productId,
         price,
         quantity,
@@ -85,7 +84,7 @@ export class TransactionService {
   addProductsBatch(products: any[], transactionId: number) {
     return this.http
       .post(
-        `${this.apiRoot}/transactions/id/${transactionId}/products`,
+        `${this.apiUrl}/transactions/id/${transactionId}/products`,
         products
       )
       .pipe(
@@ -100,7 +99,7 @@ export class TransactionService {
   deleteProduct(transactionId: number, productName: string) {
     return this.http
       .delete(
-        `${this.apiRoot}/transactions/id/${transactionId}/product/${productName}`
+        `${this.apiUrl}/transactions/id/${transactionId}/product/${productName}`
       )
       .pipe(
         tap(() => this.transactionUpdated.next()),

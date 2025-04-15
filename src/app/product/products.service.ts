@@ -4,6 +4,7 @@ import { Product } from './product.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SortEvent } from '../shared/sortable.directive';
 import { Category } from './category.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,10 @@ import { Category } from './category.model';
 export class ProductService {
   productSource = signal<Product | null>(null);
   productsUpdated = new Subject<void>();
-  productEndpoint = 'http://localhost:8080/api/v1/products';
-  categoryEndpoint = 'http://localhost:8080/api/v1/categories';
+  private apiUrl = environment.apiBaseUrl;
+
+  productEndpoint = `${this.apiUrl}/products`;
+  categoryEndpoint = `${this.apiUrl}/categories`;
   private categories: Category[] = [];
   private categoriesLoaded = false;
   constructor(private http: HttpClient) {}
@@ -22,15 +25,13 @@ export class ProductService {
   }
 
   addProduct(product: Partial<Product>): Observable<any> {
-    return this.http
-      .post(`${this.productEndpoint}/id/${product.id}`, product)
-      .pipe(
-        tap(() => this.productsUpdated.next()),
-        catchError((err) => {
-          // console.log('Error adding product',err)
-          throw err;
-        })
-      );
+    return this.http.post(`${this.productEndpoint}`, product).pipe(
+      tap(() => this.productsUpdated.next()),
+      catchError((err) => {
+        // console.log('Error adding product',err)
+        throw err;
+      })
+    );
   }
   getAllProducts(): Observable<any> {
     return this.http.get(`${this.productEndpoint}/all`);

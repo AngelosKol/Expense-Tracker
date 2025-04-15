@@ -9,23 +9,25 @@
 		
 		<div class="card-body  mt-5">
 			<form [formGroup]="transactionForm"  class="m-0" (ngSubmit)="onSubmit()">
-				<div class="col-auto mb-3">
-				  <input formControlName='transactionDate'  type="date"  class="form-control"
-				  value="2018-07-22" min="2018-01-01"  id="transactionDate" placeholder="Transaction Date">
+				<div class="row form-group mb-3">
+				<label for="transactionDate" class="col-sm-2 col-form-label col-form-label">Date</label>
+				<div class="col-sm-10">
+					<input formControlName='transactionDate'  type="date"  class="form-control"
+					value="2018-07-22" min="2018-01-01"  id="transactionDate" placeholder="Transaction Date">
 				</div>
-				<div class="col-auto mb-3">
-					<label for="typeahead-focus">Search for a Shop:</label>
-					<input formControlName='shopName'  type="text"  class="form-control"
-					  id="shop" placeholder="Choose a shop"
-					[ngbTypeahead]="search"
-					(ngModelChange)="onShopSelected($event)"
-					[ngClass]="{'is-invalid': !selectedShop?.id && transactionForm.get('shopName').touched}"
-					  >	
-					  <input type="hidden" formControlName="shopId" [value]="selectedShop?.id">
-					  <span class="help-block text-center" *ngIf="!selectedShop?.id && transactionForm.get('shopName').touched" >No Such Shop</span>
+				</div>
+				<div class="row form-group mb-3">
+					<label for="shop" class="col-sm-2 col-form-label col-form-label">Shop</label>
+					<div class="col-sm-10">
+						<select class="form-select" id="shop" name="shop" formControlName="shopName" >
+							@for (shop of shops$ | async; track shop.id) {
+								<option [value]="shop.name">{{shop.name}}</option>
+							}
+						</select>
+					</div>
 					</div>
 				<div class="col-auto d-flex justify-content-center">
-				  <button  type="submit" class="btn btn-primary mb-3" [disabled]="!transactionForm.valid || !selectedShop?.id">Submit</button>
+				  <button  type="submit" class="btn btn-primary mb-3" [disabled]="!transactionForm.valid">Submit</button>
 				</div>
 				<div class="col-auto d-flex justify-content-center" *ngIf="!transactionForm.valid && transactionForm.touched">
 					<span class="help-block text-center">Please fill the required fields</span>

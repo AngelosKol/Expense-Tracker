@@ -19,14 +19,15 @@ import { Product } from '../../product/product.model';
 import { Currency, CurrencyService } from 'src/app/shared/currency.service';
 import { CommonModule } from '@angular/common';
 import { TransactionService } from 'src/app/transaction/transaction.service';
+import { BaseModalComponent } from 'src/app/shared/components/base-modal/base-modal.component';
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgbTypeahead, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, NgbTypeahead, FormsModule, BaseModalComponent],
   selector: 'app-transactionProducts-modal',
-  templateUrl: './add-product-to-transaction-modal.component.html',
+  templateUrl: './add-product-to-transaction-modal.component.html'
 })
-export class AddProductToTransactionModalComponent implements OnInit {
+export class AddProductToTransactionModalComponent extends BaseModalComponent implements OnInit {
   products: Product[];
   selectedProduct: Product;
   transactionProductForm: FormGroup;
@@ -35,13 +36,16 @@ export class AddProductToTransactionModalComponent implements OnInit {
   mode: string;
   error: string;
   pendingProducts: Product[] = [];
+
   constructor(
-    public activeModal: NgbActiveModal,
+    public override activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private productService: ProductService,
     private currencyService: CurrencyService,
     private transactionService: TransactionService
-  ) {}
+  ) {
+    super(activeModal);
+  }
 
   ngOnInit() {
     this.currencyService.currencies$.subscribe((data) => {
@@ -110,12 +114,10 @@ export class AddProductToTransactionModalComponent implements OnInit {
       .subscribe({
         next: () => {
           this.pendingProducts = [];
-          console.log('success');
+          this.handleSuccess();
         },
-        error: (err) => console.log(err),
+        error: (err) => this.handleError(err),
       });
-    this.activeModal.close(this.pendingProducts);
-    this.initializeForm();
   }
 
   onProductSelected(selectedProductName: string) {
@@ -129,14 +131,14 @@ export class AddProductToTransactionModalComponent implements OnInit {
     }
   }
 
-  handleSuccess() {
-    this.activeModal.close();
+  protected override handleSuccess() {
+    super.handleSuccess();
     this.initializeForm();
   }
 
-  handleError(error) {
-    this.initializeForm();
-    this.setError(error.error.message);
+  protected override handleError(error: any) {
+    super.handleError(error);
+    this.error = error.error.message;
   }
 
   initializeForm() {
@@ -148,13 +150,13 @@ export class AddProductToTransactionModalComponent implements OnInit {
       ],
       quantity: [
         1,
-        [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
+        [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],
       ],
       productId: [],
     });
   }
 
-  setError(errMsg: string) {
+  private setError(errMsg: string) {
     this.error = errMsg;
     setTimeout(() => (this.error = null), 8000);
   }

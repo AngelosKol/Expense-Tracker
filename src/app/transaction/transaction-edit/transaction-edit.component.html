@@ -37,7 +37,7 @@
                     <tr>
                         <td><ngb-highlight [result]="prod.name" [term]="filter.value"></ngb-highlight>  </td>
                         <td scope="row">{{ prod.price | number }} {{currency.symbol}}</td>
-                        <td scope="row"> {{ prod.quantity | number  }}</td>
+                        <td scope="row">{{ prod.quantity | number }}</td>
                         <td class="text-end"> 
                           <div class="d-flex flex-row justify-content-center gap-2">
                                 <button type="submit" class="btn btn-danger btn-sm" (click)="onDelete(prod)">

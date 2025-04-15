@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Transaction } from '../../transaction/transaction.model';
-import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TransactionService } from '../../transaction/transaction.service';
 import {
   OperatorFunction,
@@ -21,13 +21,13 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgbTypeahead],
+  imports: [ReactiveFormsModule, CommonModule],
   selector: 'app-transaction-modal',
   templateUrl: './create-transaction-modal.component.html',
 })
 export class CreateTransactionModalComponent {
   transactionForm: FormGroup;
-  shops: Shop[];
+  shops$: Observable<Shop[]>;
   selectedShop: Shop;
 
   constructor(
@@ -38,28 +38,9 @@ export class CreateTransactionModalComponent {
   ) {}
 
   ngOnInit() {
-    this.getShops();
+    this.shops$ = this.shopService.getAllShops();
     this.initializeForm();
   }
-
-  search: OperatorFunction<string, readonly string[]> = (
-    text$: Observable<string>
-  ) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map((term) =>
-        term.length < 2
-          ? []
-          : this.shops
-              .filter(
-                (product) =>
-                  product.name.toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
-              .map((product) => product.name)
-              .slice(0, 10)
-      )
-    );
 
   onSubmit() {
     const formValue = this.transactionForm.value;
@@ -73,17 +54,6 @@ export class CreateTransactionModalComponent {
       },
       error: (err) => {
         this.handleError(err);
-      },
-    });
-  }
-
-  getShops() {
-    this.shopService.getAllShops().subscribe({
-      next: (data) => {
-        this.shops = data;
-      },
-      error: (err) => {
-        console.log(err);
       },
     });
   }
@@ -106,16 +76,5 @@ export class CreateTransactionModalComponent {
   handleError(error) {
     this.initializeForm();
     console.log(error);
-  }
-
-  onShopSelected(selectedShopName: string) {
-    this.selectedShop = this.shops.find(
-      (shop) => shop.name === selectedShopName
-    );
-    if (this.selectedShop) {
-      this.transactionForm.patchValue({
-        shopId: this.selectedShop.id,
-      });
-    }
   }
 }
