@@ -18,7 +18,6 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { compare } from '../shared/utils';
 import { LoadingSpinnerComponent } from '../shared/loading-spinner/loading-spinner.component';
 import { AsyncPipe } from '@angular/common';
 @Component({

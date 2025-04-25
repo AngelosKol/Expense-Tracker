@@ -18,16 +18,19 @@ import {
 import { Product } from '../../product/product.model';
 import { Currency, CurrencyService } from 'src/app/shared/currency.service';
 import { CommonModule } from '@angular/common';
-import { TransactionService } from 'src/app/transaction/transaction.service';
 import { BaseModalComponent } from 'src/app/shared/components/base-modal/base-modal.component';
+import { TransactionDetailsService } from 'src/app/transaction/transaction-details/transaction-details.service';
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgbTypeahead, FormsModule, BaseModalComponent],
+  imports: [ReactiveFormsModule, CommonModule, NgbTypeahead, FormsModule],
   selector: 'app-transactionProducts-modal',
-  templateUrl: './add-product-to-transaction-modal.component.html'
+  templateUrl: './add-product-to-transaction-modal.component.html',
 })
-export class AddProductToTransactionModalComponent extends BaseModalComponent implements OnInit {
+export class AddProductToTransactionModalComponent
+  extends BaseModalComponent
+  implements OnInit
+{
   products: Product[];
   selectedProduct: Product;
   transactionProductForm: FormGroup;
@@ -42,7 +45,7 @@ export class AddProductToTransactionModalComponent extends BaseModalComponent im
     private fb: FormBuilder,
     private productService: ProductService,
     private currencyService: CurrencyService,
-    private transactionService: TransactionService
+    private transactionDetailsService: TransactionDetailsService
   ) {
     super(activeModal);
   }
@@ -109,7 +112,7 @@ export class AddProductToTransactionModalComponent extends BaseModalComponent im
     const productsToSend = this.pendingProducts.map(
       ({ name, ...rest }) => rest
     );
-    this.transactionService
+    this.transactionDetailsService
       .addProductsBatch(productsToSend, this.transactionId)
       .subscribe({
         next: () => {

@@ -13,6 +13,9 @@
                 [collectionSize]="collectionSize"
                 [(page)]="currentPage"
                 [pageSize]="itemsPerPage"
+                [maxSize]="5" 
+                [ellipses]="true"  
+
                 (pageChange)="onPageChange($event)">
             </ngb-pagination>
             <button class="btn" style="background-color: #00B3BB; color:white;" (click)="addProduct()">Add Product </button>

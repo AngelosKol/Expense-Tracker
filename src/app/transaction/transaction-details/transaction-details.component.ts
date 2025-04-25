@@ -1,5 +1,4 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { TransactionService } from '../transaction.service';
 import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe, CommonModule, DecimalPipe } from '@angular/common';
 import {
@@ -26,6 +25,7 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AddProductToTransactionModalComponent } from 'src/app/modals/add-product-modal/add-product-to-transaction-modal.component';
 import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
+import { TransactionDetailsService } from './transaction-details.service';
 
 @Component({
   standalone: true,
@@ -40,10 +40,10 @@ import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-
     CommonModule,
   ],
   selector: 'app-transaction-edit',
-  templateUrl: './transaction-edit.component.html',
+  templateUrl: './transaction-details.component.html',
   providers: [DecimalPipe],
 })
-export class TransactionEditComponent implements OnInit {
+export class TransactionDetails implements OnInit {
   transactionId: number;
   products$: Observable<Product[]>;
   currency: Currency;
@@ -64,7 +64,7 @@ export class TransactionEditComponent implements OnInit {
   });
 
   constructor(
-    private transactionService: TransactionService,
+    private transactionDetailsService: TransactionDetailsService,
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private currencyService: CurrencyService
@@ -87,9 +87,8 @@ export class TransactionEditComponent implements OnInit {
     );
 
     // Observable for product updates (additions/deletions)
-    const transactionUpdated$ = this.transactionService.transactionUpdated.pipe(
-      startWith(null)
-    );
+    const transactionUpdated$ =
+      this.transactionDetailsService.transactionUpdated.pipe(startWith(null));
 
     // Combine filter, pagination, sorting, and product updates into one stream
     this.products$ = combineLatest([
@@ -100,7 +99,7 @@ export class TransactionEditComponent implements OnInit {
     ]).pipe(
       switchMap(([filterText, _, currentPage, sortEvent]) => {
         this.isLoading = true;
-        return this.transactionService
+        return this.transactionDetailsService
           .getProducts(this.transactionId, this.itemsPerPage, currentPage)
           .pipe(
             map((data: any) => {
@@ -135,9 +134,12 @@ export class TransactionEditComponent implements OnInit {
 
   // Modal Methods
   addProduct() {
-    const modalRef = this.modalService.open(AddProductToTransactionModalComponent, {
-      size: 'lg',
-    });
+    const modalRef = this.modalService.open(
+      AddProductToTransactionModalComponent,
+      {
+        size: 'lg',
+      }
+    );
     modalRef.componentInstance.transactionId = this.transactionId;
     modalRef.componentInstance.pendingProducts = this.pendingProducts;
     modalRef.result.then(
@@ -154,7 +156,7 @@ export class TransactionEditComponent implements OnInit {
     const productsToSend = this.pendingProducts.map(
       ({ name, ...rest }) => rest
     );
-    this.transactionService
+    this.transactionDetailsService
       .addProductsBatch(productsToSend, this.transactionId)
       .subscribe({
         next: () => {
@@ -167,7 +169,7 @@ export class TransactionEditComponent implements OnInit {
 
   onDelete(prod: Product) {
     if (window.confirm('Delete Item?')) {
-      this.transactionService
+      this.transactionDetailsService
         .deleteProduct(this.transactionId, prod.name)
         .subscribe({
           next: () => console.log('Product removed.'),

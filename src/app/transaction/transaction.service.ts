@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
 })
 export class TransactionService {
   transactionsUpdated = new Subject<void>();
-  transactionUpdated = new Subject<void>();
   private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
@@ -45,68 +44,5 @@ export class TransactionService {
         throw error;
       })
     );
-  }
-
-  getAllProducts(transactionId: number) {
-    return this.http.get(
-      `${this.apiUrl}/transactions/id/${transactionId}/details/all`
-    );
-  }
-
-  getProducts(transactionId: number, size: number, page: number) {
-    return this.http.get(
-      `${
-        this.apiUrl
-      }/transactions/id/${transactionId}/details?size=${size}&page=${page - 1}`
-    );
-  }
-
-  addProductTotransaction(
-    transactionId: number,
-    productId: number,
-    price: number,
-    quantity: number
-  ) {
-    return this.http
-      .post(`${this.apiUrl}/transactions/id/${transactionId}/product`, {
-        productId,
-        price,
-        quantity,
-      })
-      .pipe(
-        tap(() => this.transactionUpdated.next()),
-        catchError((err) => {
-          console.error('Error adding product to transaction');
-          throw err;
-        })
-      );
-  }
-  addProductsBatch(products: any[], transactionId: number) {
-    return this.http
-      .post(
-        `${this.apiUrl}/transactions/id/${transactionId}/products`,
-        products
-      )
-      .pipe(
-        tap(() => this.transactionUpdated.next()),
-        catchError((err) => {
-          console.error('Error adding product batch');
-          throw err;
-        })
-      );
-  }
-
-  deleteProduct(transactionId: number, productName: string) {
-    return this.http
-      .delete(
-        `${this.apiUrl}/transactions/id/${transactionId}/product/${productName}`
-      )
-      .pipe(
-        tap(() => this.transactionUpdated.next()),
-        catchError((error) => {
-          console.error('Error on removing product from transaction', error);
-          throw error;
-        })
-      );
   }
 }

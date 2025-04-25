@@ -8,7 +8,7 @@ import { RegisterComponent } from './app/landing-page/register/register.componen
 import { ProductsComponent } from './app/product/products.component';
 import { SettingsComponent } from './app/settings/settings.component';
 import { ShopsComponent } from './app/shop/shops.component';
-import { TransactionEditComponent } from './app/transaction/transaction-edit/transaction-edit.component';
+import { TransactionDetails } from './app/transaction/transaction-details/transaction-details.component';
 import { TransactionsListComponent } from './app/transaction/transaction-list/transaction-list.component';
 import { TransactionsComponent } from './app/transaction/transactions.component';
 
@@ -44,7 +44,7 @@ export const routes: Routes = [
         component: TransactionsComponent,
         children: [
           { path: '', component: TransactionsListComponent },
-          { path: ':id/edit', component: TransactionEditComponent },
+          { path: ':id/edit', component: TransactionDetails },
         ],
       },
       {
