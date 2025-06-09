@@ -15,8 +15,7 @@
 			<form [formGroup]="transactionProductForm"  class="m-0" (ngSubmit)="onProductAdd()" >
 				<div class="col-auto mb-3">
                 <label for="product">Search for a Product:</label>
-				<input formControlName='product'  type="text"  class="form-control"
-				  id="product" placeholder="Choose a Product"
+				<input formControlName='product'  type="text"  class="form-control" id="product" 
 				[ngbTypeahead]="search"
 				(ngModelChange)="onProductSelected($event)"
 				[ngClass]="{'is-invalid': !selectedProduct?.id && transactionProductForm.get('product').touched}"
@@ -25,11 +24,13 @@
 				  <span class="help-block text-center"  *ngIf="!selectedProduct?.id && transactionProductForm.get('product').touched" >No Such Product</span>
 				</div>
 				<div class="col-auto mb-3">
-				  <input formControlName='price'  type="number" class="form-control" id="price" [placeholder]="'Price ' + currency.symbol">
+				<label for="product">Price:</label>
+				  <input formControlName='price'  type="number" class="form-control" id="price">
 				  <span class="help-block text-center" *ngIf="!transactionProductForm.get('price').valid && transactionProductForm.get('price').touched" >Required field</span>
 				</div>
 				<div class="col-auto mb-3">
-					<input formControlName='quantity'  type="text" class="form-control" id="quantity" placeholder="Quantity" step="0.0001">
+					<label for="product">Quantity:</label>
+					<input formControlName='quantity'  type="text" class="form-control" id="quantity" placeholder="e.g 1200 for 1.2KG">
 					<span class="help-block text-center" *ngIf="!transactionProductForm.get('quantity').valid && transactionProductForm.get('quantity').touched" >Required field</span>
 				  </div>
 				  <div class="d-flex justify-content-between w-100">
