@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import {
+  AuthenticationRequest,
+  AuthenticationResponse,
+  RegisterRequest,
+} from '../shared/dto';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +17,7 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  register(formData: {
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-  }) {
+  register(formData: RegisterRequest) {
     return this.http.post(`${this.apiUrl}/auth/register`, formData).pipe(
       map((response) => {
         return response;
@@ -26,10 +26,14 @@ export class AuthenticationService {
   }
 
   login(email: string, password: string) {
+    const authRequest: AuthenticationRequest = { email, password };
     return this.http
-      .post(`${this.apiUrl}/auth/authenticate`, { email, password })
+      .post<AuthenticationResponse>(
+        `${this.apiUrl}/auth/authenticate`,
+        authRequest
+      )
       .pipe(
-        map((response: any) => {
+        map((response: AuthenticationResponse) => {
           const token = response.access_token;
           localStorage.setItem('jwtToken', token);
           return response;

@@ -1,4 +1,4 @@
-export interface Category {
+export interface ShopDTO {
   id: number;
   name: string;
 }

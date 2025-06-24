@@ -9,7 +9,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Product } from '../../product/product.model';
 import { ProductService } from '../../product/products.service';
 import { CommonModule } from '@angular/common';
-import { Category } from 'src/app/product/category.model';
+import { CategoryDTO } from 'src/app/shared/dto/category.dto';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -24,7 +24,7 @@ export class CreateProductModalComponent implements OnInit {
   mode: string;
   error: string;
   transactionId: number;
-  categories$: Observable<Category[]>;
+  categories$: Observable<CategoryDTO[]>;
   constructor(
     private fb: FormBuilder,
     public activeModal: NgbActiveModal,

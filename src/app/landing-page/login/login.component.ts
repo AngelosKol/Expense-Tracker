@@ -8,6 +8,10 @@ import {
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import {
+  AuthenticationRequest,
+  AuthenticationResponse,
+} from '../../shared/dto';
 
 @Component({
   standalone: true,

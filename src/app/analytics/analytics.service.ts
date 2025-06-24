@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AnalyticsDTO, MonthCostDTO, YearCostsDTO } from '../shared/dto';
 
 @Injectable({
   providedIn: 'root',
@@ -11,16 +12,20 @@ export class AnalyticsService {
 
   constructor(private http: HttpClient) {}
 
-  getTotalSpent(fromDate: String, toDate: String): Observable<any> {
-    return this.http.get(`${this.apiUrl}/analytics/${fromDate}/to/${toDate}`);
+  getTotalSpent(fromDate: string, toDate: string): Observable<AnalyticsDTO[]> {
+    return this.http.get<AnalyticsDTO[]>(
+      `${this.apiUrl}/analytics/${fromDate}/to/${toDate}`
+    );
   }
 
-  getYearTotalSpent(year: String) {
-    return this.http.get(`${this.apiUrl}/analytics/totalSpent/year/${year}`);
+  getYearTotalSpent(year: string): Observable<YearCostsDTO[]> {
+    return this.http.get<YearCostsDTO[]>(
+      `${this.apiUrl}/analytics/totalSpent/year/${year}`
+    );
   }
 
-  getMonthTotalSpent(year: string, month: string) {
-    return this.http.get(
+  getMonthTotalSpent(year: string, month: string): Observable<MonthCostDTO[]> {
+    return this.http.get<MonthCostDTO[]>(
       `${this.apiUrl}/analytics/totalSpent/year/${year}/month/${month}`
     );
   }

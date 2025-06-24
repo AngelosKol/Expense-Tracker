@@ -1,10 +1,10 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, Subject, catchError, of, tap } from 'rxjs';
-import { Product } from './product.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SortEvent } from '../shared/sortable.directive';
-import { Category } from './category.model';
 import { environment } from 'src/environments/environment';
+import { ProductDTO, CategoryDTO } from '../shared/dto';
+import { Product } from './product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,7 @@ export class ProductService {
 
   productEndpoint = `${this.apiUrl}/products`;
   categoryEndpoint = `${this.apiUrl}/categories`;
-  private categories: Category[] = [];
+  private categories: CategoryDTO[] = [];
   private categoriesLoaded = false;
   constructor(private http: HttpClient) {}
 
@@ -66,7 +66,7 @@ export class ProductService {
 
   updateProduct(
     productId: number,
-    updatedProduct: Partial<Product>
+    updatedProduct: Partial<ProductDTO>
   ): Observable<any> {
     console.log(
       `productID: ${productId} , ${updatedProduct.categoryName}. ${updatedProduct.categoryId}`
@@ -89,9 +89,9 @@ export class ProductService {
     let params = new HttpParams().set('sort', 'name' + ',' + 'asc');
 
     return this.http
-      .get<Category[]>(`${this.categoryEndpoint}`, { params })
+      .get<CategoryDTO[]>(`${this.categoryEndpoint}`, { params })
       .pipe(
-        tap((categories: Category[]) => {
+        tap((categories: CategoryDTO[]) => {
           console.log(categories);
           this.categories = categories;
           this.categoriesLoaded = true;

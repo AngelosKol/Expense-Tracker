@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject, catchError, tap } from 'rxjs';
-import { Shop } from './shop.model';
 import { environment } from 'src/environments/environment';
+import { ShopDTO } from '../shared/dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShopService {
-  private shopSource = new BehaviorSubject<Shop | null>(null);
+  private shopSource = new BehaviorSubject<ShopDTO | null>(null);
   currentShop = this.shopSource.asObservable();
   shopsUpdated = new Subject<void>();
   private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
-  setShop(shop: Shop) {
+  setShop(shop: ShopDTO) {
     this.shopSource.next(shop);
   }
 
@@ -27,7 +27,7 @@ export class ShopService {
     return this.http.get(`${this.apiUrl}/shops/all`);
   }
 
-  addShop(shop: Shop): Observable<any> {
+  addShop(shop: ShopDTO): Observable<any> {
     return this.http.post(`${this.apiUrl}/shops`, shop).pipe(
       tap(() => this.shopsUpdated.next()),
       catchError((err) => {
@@ -37,7 +37,7 @@ export class ShopService {
     );
   }
 
-  updateShop(shopId: number, updatedShop: Partial<Shop>): Observable<any> {
+  updateShop(shopId: number, updatedShop: Partial<ShopDTO>): Observable<any> {
     return this.http.put(`${this.apiUrl}/shops/id/${shopId}`, updatedShop).pipe(
       tap(() => this.shopsUpdated.next()),
       catchError((err) => {

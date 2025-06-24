@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, tap, catchError } from 'rxjs';
-import { Transaction } from './transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { TransactionDTO } from '../shared/dto';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +26,7 @@ export class TransactionService {
     return this.http.get(`${this.apiUrl}/transactions/id/${id}`);
   }
 
-  addTransaction(transaction: Transaction): Observable<any> {
+  addTransaction(transaction: TransactionDTO): Observable<any> {
     return this.http.post(`${this.apiUrl}/transactions`, transaction).pipe(
       tap(() => this.transactionsUpdated.next()),
       catchError((error) => {
