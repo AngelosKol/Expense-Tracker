@@ -5,4 +5,5 @@ export interface Product {
   price: number;
   categoryName: string;
   categoryId: number;
+  measuringType: number;
 }

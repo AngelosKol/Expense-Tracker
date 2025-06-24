@@ -11,6 +11,7 @@ import { ProductService } from '../../product/products.service';
 import { CommonModule } from '@angular/common';
 import { CategoryDTO } from 'src/app/shared/dto/category.dto';
 import { Observable } from 'rxjs';
+import { MeasuringType } from 'src/app/shared/dto';
 
 @Component({
   standalone: true,
@@ -25,6 +26,7 @@ export class CreateProductModalComponent implements OnInit {
   error: string;
   transactionId: number;
   categories$: Observable<CategoryDTO[]>;
+  measuringTypes$: Observable<MeasuringType[]>;
   constructor(
     private fb: FormBuilder,
     public activeModal: NgbActiveModal,
@@ -33,6 +35,8 @@ export class CreateProductModalComponent implements OnInit {
 
   ngOnInit() {
     this.categories$ = this.productService.getCategories();
+    this.measuringTypes$ = this.productService.getMeasuringTypes();
+
     if (this.mode == 'edit') {
       this.product = this.productService.productSource();
       this.initializeEditForm();
@@ -47,7 +51,9 @@ export class CreateProductModalComponent implements OnInit {
       const newProduct = {
         name: formValue.productName,
         categoryName: formValue.categoryName,
+        measuringType: formValue.measuringType,
       };
+      console.log(newProduct);
       this.productService.addProduct(newProduct).subscribe({
         next: () => {
           this.handleSuccess();
@@ -60,7 +66,10 @@ export class CreateProductModalComponent implements OnInit {
       const updatedProduct: Partial<Product> = {
         name: formValue.productName,
         categoryName: formValue.categoryName,
+        measuringType: formValue.measuringType,
       };
+      console.log(updatedProduct);
+
       this.productService
         .updateProduct(this.product.id, updatedProduct)
         .subscribe({
@@ -79,12 +88,14 @@ export class CreateProductModalComponent implements OnInit {
     this.productForm = this.fb.group({
       productName: [this.product.name, Validators.required],
       categoryName: [this.product.categoryName, Validators.required],
+      measuringType: [this.product.measuringType, Validators.required],
     });
   }
   initializeForm() {
     this.productForm = this.fb.group({
       productName: ['', Validators.required],
       categoryName: ['', Validators.required],
+      measuringType: ['', Validators.required],
     });
   }
 

@@ -33,6 +33,7 @@
                 <tr>
                     <th scope="col" sortable="categoryName"  (sort)="onSort($event)" >Product Category</th>
                     <th scope="col" sortable="name" (sort)="onSort($event)">Product Name</th>
+                      <th scope="col" sortable="name" (sort)="onSort($event)">Measuring Type</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@
                     <tr>
                         <td scope="col">{{ prod.categoryName  }}</td>
                         <td><ngb-highlight [result]="prod.name" [term]="filter.value"></ngb-highlight>  </td>
+                        <td scope="col">{{ prod.measuringType  }}</td>
                         <td class="text-end"> 
                           <div class="d-flex flex-row justify-content-end gap-2">
                             <button type="submit" class="btn btn-warning btn-sm" (click)="onEdit(prod)">

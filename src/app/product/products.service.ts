@@ -3,7 +3,7 @@ import { Observable, Subject, catchError, of, tap } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SortEvent } from '../shared/sortable.directive';
 import { environment } from 'src/environments/environment';
-import { ProductDTO, CategoryDTO } from '../shared/dto';
+import { ProductDTO, CategoryDTO, MeasuringType } from '../shared/dto';
 import { Product } from './product.model';
 
 @Injectable({
@@ -69,7 +69,7 @@ export class ProductService {
     updatedProduct: Partial<ProductDTO>
   ): Observable<any> {
     console.log(
-      `productID: ${productId} , ${updatedProduct.categoryName}. ${updatedProduct.categoryId}`
+      `productID: ${productId} , ${updatedProduct.categoryName}. ${updatedProduct.categoryId}, ${updatedProduct.measuringType}`
     );
     return this.http
       .put(`${this.productEndpoint}/id/${productId}`, updatedProduct)
@@ -97,5 +97,9 @@ export class ProductService {
           this.categoriesLoaded = true;
         })
       );
+  }
+
+  getMeasuringTypes(): Observable<any> {
+    return this.http.get<any>(`${this.productEndpoint}/measuring-types`);
   }
 }

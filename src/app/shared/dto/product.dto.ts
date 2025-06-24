@@ -3,6 +3,7 @@ export interface ProductDTO {
   name: string;
   categoryName: string;
   categoryId: number;
+  measuringType: number;
 }
 
 export interface ProductDetailsDTO {
