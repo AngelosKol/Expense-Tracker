@@ -13,11 +13,13 @@ export class ProductService {
   productSource = signal<Product | null>(null);
   productsUpdated = new Subject<void>();
   private apiUrl = environment.apiBaseUrl;
-
+  private categories: CategoryDTO[] = [];
+  private measuringTypes: MeasuringType[] = [];
+  private categoriesLoaded = false;
+  private measuringTypesLoaded = false;
   productEndpoint = `${this.apiUrl}/products`;
   categoryEndpoint = `${this.apiUrl}/categories`;
-  private categories: CategoryDTO[] = [];
-  private categoriesLoaded = false;
+
   constructor(private http: HttpClient) {}
 
   setProduct(product: Product) {
@@ -100,6 +102,14 @@ export class ProductService {
   }
 
   getMeasuringTypes(): Observable<any> {
-    return this.http.get<any>(`${this.productEndpoint}/measuring-types`);
+    if (this.measuringTypesLoaded) {
+      return of(this.measuringTypes);
+    }
+    return this.http.get<any>(`${this.productEndpoint}/measuring-types`).pipe(
+      tap((measuringTypes: MeasuringType[]) => {
+        this.measuringTypes = measuringTypes;
+        this.measuringTypesLoaded = true;
+      })
+    );
   }
 }

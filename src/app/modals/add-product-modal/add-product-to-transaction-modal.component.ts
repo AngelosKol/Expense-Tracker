@@ -152,7 +152,7 @@ export class AddProductToTransactionModalComponent
         [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
       ],
       quantity: [
-        1,
+        '',
         [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],
       ],
       productId: [],

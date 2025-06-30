@@ -24,7 +24,7 @@
 				  <span class="help-block text-center"  *ngIf="!selectedProduct?.id && transactionProductForm.get('product').touched" >No Such Product</span>
 				</div>
 				<div class="col-auto mb-3">
-				<label for="product">Price:</label>
+				<label for="product">Total price:</label>
 				  <input formControlName='price'  type="number" class="form-control" id="price">
 				  <span class="help-block text-center" *ngIf="!transactionProductForm.get('price').valid && transactionProductForm.get('price').touched" >Required field</span>
 				</div>
