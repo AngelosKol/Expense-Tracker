@@ -13,6 +13,8 @@
                 [collectionSize]="collectionSize"
                 [(page)]="currentPage"
                 [pageSize]="itemsPerPage"
+                [maxSize]="5" 
+                [ellipses]="true"  
                 (pageChange)="onPageChange($event)">
               </ngb-pagination>
                 <button class="btn p-1" style="background-color: #00B3BB; color:white;" (click)="addProduct()" >Add Product</button>
@@ -30,6 +32,8 @@
                     <th scope="col" sortable="name" (sort)="onSort($event)"> Name</th>
                     <th scope="col" sortable="price"  (sort)="onSort($event)" > Price</th>
                     <th scope="col" sortable="quantity" (sort)="onSort($event)"> Quantity</th>
+                    <th scope="col" sortable="unitCount" (sort)="onSort($event)"> Units</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +42,7 @@
                         <td><ngb-highlight [result]="prod.name" [term]="filter.value"></ngb-highlight>  </td>
                         <td scope="row">{{ prod.price | number }} {{currency.symbol}}</td>
                         <td scope="row">{{ prod.quantity | number }}</td>
+                        <td scope="row">{{ prod.unitCount | number }}</td>
                         <td class="text-end"> 
                           <div class="d-flex flex-row justify-content-center gap-2">
                                 <button type="submit" class="btn btn-danger btn-sm" (click)="onDelete(prod)">

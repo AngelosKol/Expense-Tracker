@@ -96,6 +96,7 @@ export class AddProductToTransactionModalComponent
       productId: formValue.productId,
       price: formValue.price,
       quantity: formValue.quantity,
+      unitCount: formValue.unitCount,
     };
     const isExists = this.pendingProducts.some(
       (p) => p.name === newProduct.name
@@ -153,6 +154,10 @@ export class AddProductToTransactionModalComponent
       ],
       quantity: [
         '',
+        [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],
+      ],
+      unitCount: [
+        1,
         [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],
       ],
       productId: [],

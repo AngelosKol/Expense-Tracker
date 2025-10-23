@@ -32,8 +32,12 @@
 					<label for="product">Quantity:</label>
 					<input formControlName='quantity'  type="text" class="form-control" id="quantity" placeholder="e.g 1200 for 1.2KG">
 					<span class="help-block text-center" *ngIf="!transactionProductForm.get('quantity').valid && transactionProductForm.get('quantity').touched" >Required field</span>
-				  </div>
-				  <div class="d-flex justify-content-between w-100">
+				</div>
+				<div class="col-auto mb-3">
+					<label for="product">Units:</label>
+					<input formControlName='unitCount'  type="number" class="form-control" id="unitCount" [defaultValue]="1">
+				</div>
+				<div class="d-flex justify-content-between w-100">
 					<div class="mx-auto">
 						<button type="submit" class="btn btn-primary mb-3" style="background-color: #00B3BB; color:white;"
 							[disabled]="!transactionProductForm.valid || !selectedProduct?.id">Add</button>

@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   quantity: number;
   price: number;
+  unitCount: number;
   categoryName: string;
   categoryId: number;
   measuringType: number;

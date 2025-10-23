@@ -5,9 +5,3 @@ export interface ProductDTO {
   categoryId: number;
   measuringType: number;
 }
-
-export interface ProductDetailsDTO {
-  productId: number;
-  price: number;
-  quantity: number;
-}
