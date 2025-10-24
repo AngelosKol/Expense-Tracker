@@ -5,7 +5,7 @@ import {
   NgbPagination,
   NgbPaginationModule,
 } from '@ng-bootstrap/ng-bootstrap';
-import { CreateTransactionModalComponent } from '../../modals/create-transaction-modal/create-transaction-modal.component';
+import { ManageTransactionModalComponent } from '../../modals/manage-transaction-modal/manage-transaction-modal.component';
 import { TransactionService } from '../transaction.service';
 import { Transaction } from '../transaction.model';
 import { Router } from '@angular/router';
@@ -25,6 +25,7 @@ import {
 import { NgbdSortableHeader } from 'src/app/shared/sortable.directive';
 import { AsyncPipe } from '@angular/common';
 import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
+import { TransactionDTO } from 'src/app/shared/dto';
 
 @Component({
   standalone: true,
@@ -116,10 +117,19 @@ export class TransactionsListComponent implements OnInit {
   //Modal Methods
 
   open() {
-    this.modalService.open(CreateTransactionModalComponent, {
+    const modalRef = this.modalService.open(ManageTransactionModalComponent, {
       size: 'xl',
       animation: true,
     });
+    modalRef.componentInstance.mode = 'add';
+  }
+
+  onEdit(transaction: TransactionDTO) {
+    this.transactionService.setTransaction(transaction);
+    const modalRef = this.modalService.open(ManageTransactionModalComponent, {
+      size: 'xl',
+    });
+    modalRef.componentInstance.mode = 'edit';
   }
 
   onDelete(id: number) {

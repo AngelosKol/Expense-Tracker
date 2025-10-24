@@ -11,16 +11,16 @@ import { ProductService } from '../../product/products.service';
 import { CommonModule } from '@angular/common';
 import { CategoryDTO } from 'src/app/shared/dto/category.dto';
 import { Observable } from 'rxjs';
-import { MeasuringType } from 'src/app/shared/dto';
+import { MeasuringType, ProductDTO } from 'src/app/shared/dto';
 
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   selector: 'app-product-modal',
-  templateUrl: './create-product-modal.component.html',
+  templateUrl: './manage-product-modal.component.html',
 })
-export class CreateProductModalComponent implements OnInit {
-  product: Product;
+export class ManageProductModalComponent implements OnInit {
+  product: Partial<Product>;
   productForm: FormGroup;
   mode: string;
   error: string;
@@ -48,12 +48,11 @@ export class CreateProductModalComponent implements OnInit {
     const formValue = this.productForm.value;
     console.log(formValue);
     if (this.mode == 'add') {
-      const newProduct = {
+      const newProduct: Partial<ProductDTO> = {
         name: formValue.productName,
         categoryName: formValue.categoryName,
         measuringType: formValue.measuringType,
       };
-      console.log(newProduct);
       this.productService.addProduct(newProduct).subscribe({
         next: () => {
           this.handleSuccess();
@@ -63,12 +62,11 @@ export class CreateProductModalComponent implements OnInit {
         },
       });
     } else if (this.mode == 'edit') {
-      const updatedProduct: Partial<Product> = {
+      const updatedProduct: Partial<ProductDTO> = {
         name: formValue.productName,
         categoryName: formValue.categoryName,
         measuringType: formValue.measuringType,
       };
-      console.log(updatedProduct);
 
       this.productService
         .updateProduct(this.product.id, updatedProduct)
@@ -84,7 +82,6 @@ export class CreateProductModalComponent implements OnInit {
   }
 
   initializeEditForm() {
-    console.log(this.product.categoryName);
     this.productForm = this.fb.group({
       productName: [this.product.name, Validators.required],
       categoryName: [this.product.categoryName, Validators.required],
@@ -105,7 +102,7 @@ export class CreateProductModalComponent implements OnInit {
   }
 
   handleError(error) {
-    this.initializeForm();
+    this.initializeEditForm();
     this.setError(error.error.message);
   }
 

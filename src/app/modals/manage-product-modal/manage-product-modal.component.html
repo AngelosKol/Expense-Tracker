@@ -7,8 +7,11 @@
       </button>
 </div>
 <div class="modal-body">
+		<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+				{{ error }}
+				<button type="button" class="btn-close" aria-label="Close" (click)="error = null"></button>
+		</div>
 			<form [formGroup]="productForm"  class="m-0" (ngSubmit)="onSubmit()">
-	
 				<div class="row form-group mb-3">
 					<label for="category" class="col-sm-2 col-form-label col-form-label">Product Category</label>
 					<div class="col-sm-10">

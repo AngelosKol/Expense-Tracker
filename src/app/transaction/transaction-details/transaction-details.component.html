@@ -37,15 +37,15 @@
                 </tr>
             </thead>
             <tbody>
-                @for (prod of products$ | async; track prod.name ) {
+                @for (detail of transactionDetails$ | async; track detail.transactionDetailsId ) {
                     <tr>
-                        <td><ngb-highlight [result]="prod.name" [term]="filter.value"></ngb-highlight>  </td>
-                        <td scope="row">{{ prod.price | number }} {{currency.symbol}}</td>
-                        <td scope="row">{{ prod.quantity | number }}</td>
-                        <td scope="row">{{ prod.unitCount | number }}</td>
+                        <td><ngb-highlight [result]="detail.productName" [term]="filter.value"></ngb-highlight>  </td>
+                        <td scope="row">{{ detail.price | number }} {{currency.symbol}}</td>
+                        <td scope="row">{{ detail.quantity | number }}</td>
+                        <td scope="row">{{ detail.unitCount | number }}</td>
                         <td class="text-end"> 
                           <div class="d-flex flex-row justify-content-center gap-2">
-                                <button type="submit" class="btn btn-danger btn-sm" (click)="onDelete(prod)">
+                                <button type="submit" class="btn btn-danger btn-sm" (click)="onDelete(detail.transactionDetailsId)">
                                     <i class="bi bi-x"></i>
                                 </button>
                           </div>

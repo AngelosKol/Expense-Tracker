@@ -19,8 +19,6 @@ export * from './transaction.dto';
 // Analytics DTOs
 export * from './analytics.dto';
 
-export * from './transaction-details.dto';
-
 // Enums
 export * from './enums/product-family.enum';
 export * from './enums/measuring-type.enum';

@@ -8,21 +8,17 @@ import { environment } from 'src/environments/environment';
 })
 export class TransactionDetailsService {
   transactionUpdated = new Subject<void>();
-  private apiUrl = environment.apiBaseUrl;
+  private apiUrl = `${environment.apiBaseUrl}/transaction-details/transaction`;
 
   constructor(private http: HttpClient) {}
 
   getAllProducts(transactionId: number) {
-    return this.http.get(
-      `${this.apiUrl}/transaction-details/id/${transactionId}/all`
-    );
+    return this.http.get(`${this.apiUrl}/${transactionId}/all`);
   }
 
   getProducts(transactionId: number, size: number, page: number) {
     return this.http.get(
-      `${
-        this.apiUrl
-      }/transaction-details/id/${transactionId}?size=${size}&page=${page - 1}`
+      `${this.apiUrl}/${transactionId}?size=${size}&page=${page - 1}`
     );
   }
 
@@ -33,7 +29,7 @@ export class TransactionDetailsService {
     quantity: number
   ) {
     return this.http
-      .post(`${this.apiUrl}/transaction-details/id/${transactionId}/product`, {
+      .post(`${this.apiUrl}/${transactionId}/product`, {
         productId,
         price,
         quantity,
@@ -48,10 +44,7 @@ export class TransactionDetailsService {
   }
   addProductsBatch(products: any[], transactionId: number) {
     return this.http
-      .post(
-        `${this.apiUrl}/transaction-details/id/${transactionId}/products`,
-        products
-      )
+      .post(`${this.apiUrl}/${transactionId}/products`, products)
       .pipe(
         tap(() => this.transactionUpdated.next()),
         catchError((err) => {
@@ -61,11 +54,9 @@ export class TransactionDetailsService {
       );
   }
 
-  deleteProduct(transactionId: number, productName: string) {
+  deleteProduct(transactionId: number, detailId: number) {
     return this.http
-      .delete(
-        `${this.apiUrl}/transaction-details/id/${transactionId}/product/${productName}`
-      )
+      .delete(`${this.apiUrl}/${transactionId}/product/${detailId}`)
       .pipe(
         tap(() => this.transactionUpdated.next()),
         catchError((error) => {

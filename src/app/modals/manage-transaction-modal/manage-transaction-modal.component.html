@@ -1,6 +1,7 @@
 <div class="modal-header py-1 border-0">
-	<h4 class="modal-title">New Transaction</h4>
-	<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+		<h4 class="modal-title" *ngIf="mode=='add'">New Transaction</h4>
+		<h4 class="modal-title" *ngIf="mode=='edit'">Edit Transaction</h4>
+		<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
 </div>
@@ -8,6 +9,10 @@
 	<div class="card">
 		
 		<div class="card-body  mt-5">
+			<div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+				{{ error }}
+				<button type="button" class="btn-close" aria-label="Close" (click)="error = null"></button>
+			</div>
 			<form [formGroup]="transactionForm"  class="m-0" (ngSubmit)="onSubmit()">
 				<div class="row form-group mb-3">
 				<label for="transactionDate" class="col-sm-2 col-form-label col-form-label">Date</label>
@@ -27,8 +32,8 @@
 					</div>
 					</div>
 				<div class="col-auto d-flex justify-content-center">
-				  <button  type="submit" class="btn btn-primary mb-3" [disabled]="!transactionForm.valid">Submit</button>
-				</div>
+					<button *ngIf="mode==='edit'"  type="submit" class="btn btn-warning mb-3" [disabled]="!transactionForm.valid" >Edit</button>
+					<button *ngIf="mode==='add'"  type="submit" class="btn mb-3 "style="background-color: #00B3BB; color:white;" [disabled]="!transactionForm.valid">Submit</button>				</div>
 				<div class="col-auto d-flex justify-content-center" *ngIf="!transactionForm.valid && transactionForm.touched">
 					<span class="help-block text-center">Please fill the required fields</span>
 				</div>

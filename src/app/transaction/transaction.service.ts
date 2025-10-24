@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject, tap, catchError } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { Observable, Subject, tap, catchError, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TransactionDTO } from '../shared/dto';
@@ -8,11 +8,15 @@ import { TransactionDTO } from '../shared/dto';
   providedIn: 'root',
 })
 export class TransactionService {
-  transactionsUpdated = new Subject<void>();
   private apiUrl = environment.apiBaseUrl;
+  transactionsUpdated = new Subject<void>();
+  transactionSource = signal<TransactionDTO | null>(null);
 
   constructor(private http: HttpClient) {}
 
+  setTransaction(transaction: TransactionDTO) {
+    this.transactionSource.update(() => transaction);
+  }
   getAllTransactions(): Observable<any> {
     return this.http.get(`${this.apiUrl}/transactions/all`);
   }
@@ -29,9 +33,19 @@ export class TransactionService {
   addTransaction(transaction: TransactionDTO): Observable<any> {
     return this.http.post(`${this.apiUrl}/transactions`, transaction).pipe(
       tap(() => this.transactionsUpdated.next()),
-      catchError((error) => {
-        console.error('Error adding transaction', error);
-        throw error;
+      catchError((err) => {
+        console.error('Error adding transaction', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  updateTransaction(transaction: Partial<TransactionDTO>): Observable<any> {
+    return this.http.put(`${this.apiUrl}/transactions`, transaction).pipe(
+      tap(() => this.transactionsUpdated.next()),
+      catchError((err) => {
+        console.error('Error updating transaction', err);
+        return throwError(() => err);
       })
     );
   }
@@ -39,9 +53,9 @@ export class TransactionService {
   deleteTransaction(id: number) {
     return this.http.delete(`${this.apiUrl}/transactions/id/${id}`).pipe(
       tap(() => this.transactionsUpdated.next()),
-      catchError((error) => {
-        console.error('Error deleting transaction', error);
-        throw error;
+      catchError((err) => {
+        console.error('Error deleting transaction', err);
+        return throwError(() => err);
       })
     );
   }

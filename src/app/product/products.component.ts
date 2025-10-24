@@ -5,7 +5,7 @@ import {
   NgbPagination,
 } from '@ng-bootstrap/ng-bootstrap';
 import { Product } from './product.model';
-import { CreateProductModalComponent } from '../modals/create-product-modal/create-product-modal.component';
+import { ManageProductModalComponent } from '../modals/manage-product-modal/manage-product-modal.component';
 import { ProductService } from './products.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgbdSortableHeader, SortEvent } from '../shared/sortable.directive';
@@ -107,7 +107,7 @@ export class ProductsComponent implements OnInit {
 
   // Modal Methods
   addProduct() {
-    const modalRef = this.modalService.open(CreateProductModalComponent, {
+    const modalRef = this.modalService.open(ManageProductModalComponent, {
       size: 'xl',
     });
     modalRef.componentInstance.mode = 'add';
@@ -115,7 +115,7 @@ export class ProductsComponent implements OnInit {
 
   onEdit(prod: Product) {
     this.productService.setProduct(prod);
-    const modalRef = this.modalService.open(CreateProductModalComponent, {
+    const modalRef = this.modalService.open(ManageProductModalComponent, {
       size: 'xl',
     });
     modalRef.componentInstance.mode = 'edit';

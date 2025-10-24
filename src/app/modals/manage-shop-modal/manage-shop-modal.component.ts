@@ -13,9 +13,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   selector: 'app-shop-modal',
-  templateUrl: './create-shop-modal.component.html',
+  templateUrl: './manage-shop-modal.component.html',
 })
-export class CreateShopModalComponent implements OnInit {
+export class ManageShopModalComponent implements OnInit {
   shop: Shop;
   shopForm: FormGroup;
   mode: string;

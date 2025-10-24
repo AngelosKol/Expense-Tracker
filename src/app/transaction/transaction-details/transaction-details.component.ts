@@ -26,6 +26,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AddProductToTransactionModalComponent } from 'src/app/modals/add-product-modal/add-product-to-transaction-modal.component';
 import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
 import { TransactionDetailsService } from './transaction-details.service';
+import { TransactionDetailsDTO } from 'src/app/shared/dto';
 
 @Component({
   standalone: true,
@@ -45,7 +46,7 @@ import { TransactionDetailsService } from './transaction-details.service';
 })
 export class TransactionDetails implements OnInit {
   transactionId: number;
-  products$: Observable<Product[]>;
+  transactionDetails$: Observable<TransactionDetailsDTO[]>;
   currency: Currency;
   @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
   isLoading: boolean;
@@ -91,7 +92,7 @@ export class TransactionDetails implements OnInit {
       this.transactionDetailsService.transactionUpdated.pipe(startWith(null));
 
     // Combine filter, pagination, sorting, and product updates into one stream
-    this.products$ = combineLatest([
+    this.transactionDetails$ = combineLatest([
       filter$,
       transactionUpdated$,
       this.pagination$,
@@ -106,10 +107,12 @@ export class TransactionDetails implements OnInit {
               this.collectionSize = data.totalElements;
               return data.content;
             }),
-            map((products: Product[]) => {
+            map((products: TransactionDetailsDTO[]) => {
               // Apply filtering
               products = products.filter((product) =>
-                product.name.toLowerCase().includes(filterText.toLowerCase())
+                product.productName
+                  .toLowerCase()
+                  .includes(filterText.toLowerCase())
               );
               // Apply sorting
               if (sortEvent.column && sortEvent.direction) {
@@ -167,10 +170,10 @@ export class TransactionDetails implements OnInit {
       });
   }
 
-  onDelete(prod: Product) {
+  onDelete(detailId: number) {
     if (window.confirm('Delete Item?')) {
       this.transactionDetailsService
-        .deleteProduct(this.transactionId, prod.name)
+        .deleteProduct(this.transactionId, detailId)
         .subscribe({
           next: () => console.log('Product removed.'),
           error: (err) => this.setError(err.error.message),

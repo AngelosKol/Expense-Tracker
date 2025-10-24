@@ -1,11 +1,13 @@
 export interface TransactionDTO {
   id: number;
   shopName: string;
-  date: string; // ISO date string format
+  date: string;
 }
 
 export interface TransactionDetailsDTO {
-  name: string;
+  transactionDetailsId: number;
+  productName: string;
   price: number;
   quantity: number;
+  unitCount: number;
 }

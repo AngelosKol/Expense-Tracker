@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Observable, Subject, catchError, of, tap } from 'rxjs';
+import { Observable, Subject, catchError, of, tap, throwError } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SortEvent } from '../shared/sortable.directive';
 import { environment } from 'src/environments/environment';
@@ -10,9 +10,9 @@ import { Product } from './product.model';
   providedIn: 'root',
 })
 export class ProductService {
-  productSource = signal<Product | null>(null);
-  productsUpdated = new Subject<void>();
   private apiUrl = environment.apiBaseUrl;
+  productSource = signal<ProductDTO | null>(null);
+  productsUpdated = new Subject<void>();
   private categories: CategoryDTO[] = [];
   private measuringTypes: MeasuringType[] = [];
   private categoriesLoaded = false;
@@ -22,7 +22,8 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  setProduct(product: Product) {
+  setProduct(product: ProductDTO) {
+    console.log(product);
     this.productSource.update(() => product);
   }
 
@@ -30,8 +31,7 @@ export class ProductService {
     return this.http.post(`${this.productEndpoint}`, product).pipe(
       tap(() => this.productsUpdated.next()),
       catchError((err) => {
-        // console.log('Error adding product',err)
-        throw err;
+        return throwError(() => err);
       })
     );
   }
@@ -60,8 +60,7 @@ export class ProductService {
     return this.http.delete(`${this.productEndpoint}/id/${productId}`).pipe(
       tap(() => this.productsUpdated.next()),
       catchError((err) => {
-        // console.log('Error deleting product',err)
-        throw err;
+        return throwError(() => err);
       })
     );
   }
@@ -70,16 +69,12 @@ export class ProductService {
     productId: number,
     updatedProduct: Partial<ProductDTO>
   ): Observable<any> {
-    console.log(
-      `productID: ${productId} , ${updatedProduct.categoryName}. ${updatedProduct.categoryId}, ${updatedProduct.measuringType}`
-    );
     return this.http
       .put(`${this.productEndpoint}/id/${productId}`, updatedProduct)
       .pipe(
         tap(() => this.productsUpdated.next()),
         catchError((err) => {
-          // console.log('Error updating product',err)
-          throw err;
+          return throwError(() => err);
         })
       );
   }
