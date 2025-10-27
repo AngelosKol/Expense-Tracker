@@ -40,14 +40,19 @@ export class TransactionService {
     );
   }
 
-  updateTransaction(transaction: Partial<TransactionDTO>): Observable<any> {
-    return this.http.put(`${this.apiUrl}/transactions`, transaction).pipe(
-      tap(() => this.transactionsUpdated.next()),
-      catchError((err) => {
-        console.error('Error updating transaction', err);
-        return throwError(() => err);
-      })
-    );
+  updateTransaction(
+    id: number,
+    transaction: Partial<TransactionDTO>
+  ): Observable<any> {
+    return this.http
+      .put(`${this.apiUrl}/transactions/id/${id}`, transaction)
+      .pipe(
+        tap(() => this.transactionsUpdated.next()),
+        catchError((err) => {
+          console.error('Error updating transaction', err);
+          return throwError(() => err);
+        })
+      );
   }
 
   deleteTransaction(id: number) {

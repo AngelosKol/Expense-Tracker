@@ -62,19 +62,22 @@ export class ManageTransactionModalComponent {
         },
       });
     } else if (this.mode === 'edit') {
-      const updatedTransaction: Partial<TransactionDTO> = {
+      const updatedTransaction: TransactionDTO = {
+        id: this.currentTransaction.id,
         date: formValue.transactionDate,
         shopName: formValue.shopName,
       };
 
-      this.transactionService.updateTransaction(updatedTransaction).subscribe({
-        next: () => {
-          this.handleSuccess();
-        },
-        error: (err) => {
-          this.handleError(err);
-        },
-      });
+      this.transactionService
+        .updateTransaction(this.currentTransaction.id, updatedTransaction)
+        .subscribe({
+          next: () => {
+            this.handleSuccess();
+          },
+          error: (err) => {
+            this.handleError(err);
+          },
+        });
     }
   }
 

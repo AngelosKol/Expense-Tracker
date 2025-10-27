@@ -106,6 +106,7 @@ export class AddProductToTransactionModalComponent
       return;
     }
     this.pendingProducts.push(newProduct);
+    console.log(this.pendingProducts);
     this.initializeForm();
   }
 
@@ -125,6 +126,7 @@ export class AddProductToTransactionModalComponent
   }
 
   onProductSelected(selectedProductName: string) {
+    console.log();
     this.selectedProduct = this.products.find(
       (product) => product.name === selectedProductName
     );
@@ -152,10 +154,11 @@ export class AddProductToTransactionModalComponent
         '',
         [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
       ],
-      quantity: [
-        '',
-        [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],
-      ],
+      // quantity: [
+      //   '',
+      //   [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],
+      // ],
+      quantity: ['', Validators.required],
       unitCount: [
         1,
         [Validators.required, Validators.pattern(/^\d+(\.\d{1,4})?$/)],

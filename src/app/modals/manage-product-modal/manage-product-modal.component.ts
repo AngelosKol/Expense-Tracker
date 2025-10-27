@@ -63,6 +63,7 @@ export class ManageProductModalComponent implements OnInit {
       });
     } else if (this.mode == 'edit') {
       const updatedProduct: Partial<ProductDTO> = {
+        id: this.product.id,
         name: formValue.productName,
         categoryName: formValue.categoryName,
         measuringType: formValue.measuringType,
