@@ -80,31 +80,10 @@ export class ProductService {
   }
 
   getCategories(): Observable<any> {
-    if (this.categoriesLoaded) {
-      return of(this.categories);
-    }
-    let params = new HttpParams().set('sort', 'name' + ',' + 'asc');
-
-    return this.http
-      .get<CategoryDTO[]>(`${this.categoryEndpoint}`, { params })
-      .pipe(
-        tap((categories: CategoryDTO[]) => {
-          console.log(categories);
-          this.categories = categories;
-          this.categoriesLoaded = true;
-        })
-      );
+    return this.http.get<CategoryDTO[]>(`${this.categoryEndpoint}`);
   }
 
   getMeasuringTypes(): Observable<any> {
-    if (this.measuringTypesLoaded) {
-      return of(this.measuringTypes);
-    }
-    return this.http.get<any>(`${this.productEndpoint}/measuring-types`).pipe(
-      tap((measuringTypes: MeasuringType[]) => {
-        this.measuringTypes = measuringTypes;
-        this.measuringTypesLoaded = true;
-      })
-    );
+    return this.http.get<any>(`${this.productEndpoint}/measuring-types`);
   }
 }
