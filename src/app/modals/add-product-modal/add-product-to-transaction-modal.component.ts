@@ -90,6 +90,7 @@ export class AddProductToTransactionModalComponent
   }
 
   onProductAdd() {
+    console.log(this.pendingProducts);
     const formValue = this.transactionProductForm.value;
     const newProduct: any = {
       name: this.selectedProduct.name,
@@ -98,13 +99,7 @@ export class AddProductToTransactionModalComponent
       quantity: formValue.quantity,
       unitCount: formValue.unitCount,
     };
-    const isExists = this.pendingProducts.some(
-      (p) => p.name === newProduct.name
-    );
-    if (isExists) {
-      this.setError('Product already exists in the list!');
-      return;
-    }
+
     this.pendingProducts.push(newProduct);
     console.log(this.pendingProducts);
     this.initializeForm();
@@ -144,7 +139,7 @@ export class AddProductToTransactionModalComponent
 
   protected override handleError(error: any) {
     super.handleError(error);
-    this.error = error.error.message;
+    this.setError(error.error.message);
   }
 
   initializeForm() {

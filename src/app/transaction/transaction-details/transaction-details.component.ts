@@ -144,30 +144,6 @@ export class TransactionDetails implements OnInit {
       }
     );
     modalRef.componentInstance.transactionId = this.transactionId;
-    modalRef.componentInstance.pendingProducts = this.pendingProducts;
-    modalRef.result.then(
-      (result) => {
-        if (result) {
-          this.pendingProducts = result;
-        }
-      },
-      () => {}
-    );
-  }
-
-  savePendingProducts() {
-    const productsToSend = this.pendingProducts.map(
-      ({ name, ...rest }) => rest
-    );
-    this.transactionDetailsService
-      .addProductsBatch(productsToSend, this.transactionId)
-      .subscribe({
-        next: () => {
-          this.pendingProducts = [];
-          console.log('success');
-        },
-        error: (err) => console.log(err),
-      });
   }
 
   onDelete(detailId: number) {

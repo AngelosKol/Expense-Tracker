@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, tap, catchError } from 'rxjs';
+import { Subject, tap, catchError, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
@@ -36,9 +36,9 @@ export class TransactionDetailsService {
       })
       .pipe(
         tap(() => this.transactionUpdated.next()),
-        catchError((err) => {
+        catchError((error) => {
           console.error('Error adding product to transaction');
-          throw err;
+          return throwError(() => error);
         })
       );
   }
@@ -47,9 +47,8 @@ export class TransactionDetailsService {
       .post(`${this.apiUrl}/${transactionId}/products`, products)
       .pipe(
         tap(() => this.transactionUpdated.next()),
-        catchError((err) => {
-          console.error('Error adding product batch');
-          throw err;
+        catchError((error) => {
+          return throwError(() => error);
         })
       );
   }
@@ -61,7 +60,7 @@ export class TransactionDetailsService {
         tap(() => this.transactionUpdated.next()),
         catchError((error) => {
           console.error('Error on removing product from transaction', error);
-          throw error;
+          return throwError(() => error);
         })
       );
   }
